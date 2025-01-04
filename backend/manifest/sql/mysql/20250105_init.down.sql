@@ -1,0 +1,4 @@
+
+DROP TABLE IF NOT EXISTS `t_tenant`;
+DROP TABLE IF NOT EXISTS `t_worker_node`;
+DROP TABLE IF NOT EXISTS `logs`;

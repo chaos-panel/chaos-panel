@@ -6,10 +6,15 @@ import (
 	"github.com/gogf/gf/v2/os/gcmd"
 )
 
-var Main = gcmd.Command{
-	Name:  "chaosctr",
-	Usage: "chaosctr",
+var UpdateCmd = &gcmd.Command{
+	Name:  "update",
+	Usage: "update",
+	Brief: "update chaosctr version",
 	Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 		return nil
 	},
+}
+
+func init() {
+	Main.AddCommand(UpdateCmd)
 }

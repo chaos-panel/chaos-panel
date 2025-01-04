@@ -4,8 +4,20 @@
 gfcli:
   gen:
     dao:
-      - link: "mysql:root:12345678@tcp(127.0.0.1:3306)/test"
-        descriptionTag: true
+    - link:   "tidb:2hcmR596VM9Fizz.root:wP3121gsk1AmPIDc@tcp(gateway01.eu-central-1.prod.aws.tidbcloud.com:4000)/chaos_panel?tls=true"
+      jsonCase: "CamelLower"
+      withTime: true
+
+  build:
+    name:     "chaosctr"
+    arch:     "amd64"
+    system:   "linux,darwin,windows"
+    packSrc:   "manifest/config,manifest/i18n,manifest/sql,resource/public,resource/template"
+    mod:      "none"
+    version:  "v1.0.0"
+    path:   "./bin/"
+    extra:    ""
+
 
   docker:
     build: "-a amd64 -s linux -p temp -ew"

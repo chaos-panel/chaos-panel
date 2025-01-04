@@ -2,14 +2,15 @@
 // Code generated and maintained by GoFrame CLI tool. DO NOT EDIT.
 // =================================================================================
 
-package hello
+package logs
 
 import (
 	"context"
 
-	"chaos-panel/api/hello/v1"
+	"github.com/chaos-panel/chaos-panel/api/logs/v1"
 )
 
-type IHelloV1 interface {
-	Hello(ctx context.Context, req *v1.HelloReq) (res *v1.HelloRes, err error)
+type ILogsV1 interface {
+	GetOne(ctx context.Context, req *v1.GetOneReq) (res *v1.GetOneRes, err error)
+	GetList(ctx context.Context, req *v1.GetListReq) (res *v1.GetListRes, err error)
 }
