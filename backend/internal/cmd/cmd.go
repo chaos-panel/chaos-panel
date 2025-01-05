@@ -7,8 +7,8 @@ import (
 )
 
 var Main = gcmd.Command{
-	Name:  "chaosctr",
-	Usage: "chaosctr",
+	Name:  "chaosplus",
+	Usage: "chaosplus",
 	Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 		return nil
 	},

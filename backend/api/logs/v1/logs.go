@@ -3,8 +3,8 @@ package v1
 import (
 	"time"
 
-	"github.com/chaos-panel/chaos-panel/internal/model/entity"
-	"github.com/chaos-panel/chaos-panel/utility/page"
+	"github.com/chaos-plus/chaos-plus/internal/model/entity"
+	"github.com/chaos-plus/chaos-plus/utility/page"
 	"github.com/gogf/gf/v2/frame/g"
 )
 

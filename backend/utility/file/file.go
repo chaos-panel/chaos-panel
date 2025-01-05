@@ -3,7 +3,7 @@ package file
 import (
 	"os"
 
-	"github.com/chaos-panel/chaos-panel/utility/path"
+	"github.com/chaos-plus/chaos-plus/utility/path"
 )
 
 // get file size in bytes from path

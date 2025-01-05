@@ -8,6 +8,7 @@ import (
 	_ "github.com/gogf/gf/contrib/drivers/pgsql/v2"
 	_ "github.com/gogf/gf/contrib/drivers/sqlite/v2"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gres"
 
 	// https://github.com/golang-migrate/migrate
 	"github.com/golang-migrate/migrate/v4"
@@ -18,7 +19,10 @@ import (
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 )
 
-func init() {
+func Migrate(path string) {
+	if path == "" {
+		path = "manifest/sql/"
+	}
 
 	groups := GetDatabaseGroups()
 
@@ -27,7 +31,12 @@ func init() {
 	}
 
 	for key, node := range groups {
-		from, err := NewEmbededRes("manifest/sql/" + key)
+		entries := gres.ScanDirFile(path+key, "*.sql", true)
+		if len(entries) == 0 {
+			break
+		}
+
+		from, err := NewEmbededRes(path + key)
 
 		if err != nil {
 			panic(err)
@@ -61,13 +70,19 @@ func init() {
 		if err != nil {
 			panic(err)
 		}
-
-		g.Log().Info(context.Background(), "db migration start")
+		ctx := context.Background()
+		g.Log().Info(ctx, "db migration start")
 		err = m.Up()
-		if err != nil {
-			g.Log().Info(context.Background(), "db migration error")
+		if err == nil {
+			g.Log().Info(ctx, "db migration done")
+			return
+		}
+		if err.Error() == "no change" {
+			g.Log().Info(ctx, "db migration no change")
+			return
+		} else {
+			g.Log().Info(ctx, "db migration error")
 			panic(err)
 		}
-		g.Log().Info(context.Background(), "db migration done")
 	}
 }

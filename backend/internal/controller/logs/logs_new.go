@@ -5,7 +5,7 @@
 package logs
 
 import (
-	"github.com/chaos-panel/chaos-panel/api/logs"
+	"github.com/chaos-plus/chaos-plus/api/logs"
 )
 
 type ControllerV1 struct{}

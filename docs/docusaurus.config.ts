@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'Chaos Panel',
-  tagline: 'an open source and web based server host management panel',
+  tagline: 'an open source and web based server host management',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -18,7 +18,7 @@ const config: Config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'gankcode.com', // Usually your GitHub org/user name.
-  projectName: 'chaos panel', // Usually your repo name.
+  projectName: 'chaos plus', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/chaos-panel/chaos-panel/utility/utils"
+	"github.com/chaos-plus/chaos-plus/utility/utils"
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/net/ghttp"

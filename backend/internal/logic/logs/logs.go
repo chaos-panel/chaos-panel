@@ -3,14 +3,14 @@ package logs
 import (
 	"context"
 
-	"github.com/chaos-panel/chaos-panel/internal/dao"
-	"github.com/chaos-panel/chaos-panel/internal/model/do"
-	"github.com/chaos-panel/chaos-panel/internal/service"
-	"github.com/chaos-panel/chaos-panel/utility/guid"
+	"github.com/chaos-plus/chaos-plus/internal/dao"
+	"github.com/chaos-plus/chaos-plus/internal/model/do"
+	"github.com/chaos-plus/chaos-plus/internal/service"
+	"github.com/chaos-plus/chaos-plus/utility/guid"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/os/gres"
 
-	_ "github.com/chaos-panel/chaos-panel/internal/packed"
+	_ "github.com/chaos-plus/chaos-plus/internal/packed"
 )
 
 type sLogs struct{}

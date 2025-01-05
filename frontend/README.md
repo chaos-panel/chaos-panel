@@ -1,4 +1,4 @@
-# Chaos Panel Frontend (chaos-panel-frontend)
+# Chaos Panel Frontend (chaos-plus-frontend)
 
 Chaos Panel Frontend
 

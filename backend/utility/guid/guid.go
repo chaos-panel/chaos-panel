@@ -1,7 +1,7 @@
 package guid
 
 import (
-	// "github.com/chaos-panel/chaos-panel/utility/workerid"
+	// "github.com/chaos-plus/chaos-plus/utility/workerid"
 
 	"github.com/yitter/idgenerator-go/idgen"
 )

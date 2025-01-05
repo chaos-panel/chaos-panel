@@ -212,7 +212,7 @@ export default defineConfig((ctx) => {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'chaos-panel-frontend'
+        appId: 'chaos-plus-frontend'
       }
     },
 

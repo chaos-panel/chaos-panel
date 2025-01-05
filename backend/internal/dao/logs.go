@@ -5,7 +5,7 @@
 package dao
 
 import (
-	"github.com/chaos-panel/chaos-panel/internal/dao/internal"
+	"github.com/chaos-plus/chaos-plus/internal/dao/internal"
 )
 
 // internalLogsDao is internal type for wrapping internal DAO implements.

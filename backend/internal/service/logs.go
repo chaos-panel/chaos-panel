@@ -8,7 +8,7 @@ package service
 import (
 	"context"
 
-	"github.com/chaos-panel/chaos-panel/internal/model/do"
+	"github.com/chaos-plus/chaos-plus/internal/model/do"
 )
 
 type (

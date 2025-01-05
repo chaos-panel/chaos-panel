@@ -7,10 +7,10 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 
-	"github.com/chaos-panel/chaos-panel/internal/model/do"
-	"github.com/chaos-panel/chaos-panel/internal/service"
+	"github.com/chaos-plus/chaos-plus/internal/model/do"
+	"github.com/chaos-plus/chaos-plus/internal/service"
 
-	_ "github.com/chaos-panel/chaos-panel/internal/logic"
+	_ "github.com/chaos-plus/chaos-plus/internal/logic"
 )
 
 type LogContent struct {

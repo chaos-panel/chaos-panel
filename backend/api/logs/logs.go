@@ -7,7 +7,7 @@ package logs
 import (
 	"context"
 
-	"github.com/chaos-panel/chaos-panel/api/logs/v1"
+	"github.com/chaos-plus/chaos-plus/api/logs/v1"
 )
 
 type ILogsV1 interface {

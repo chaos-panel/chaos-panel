@@ -4,9 +4,10 @@ import (
 	"context"
 	"runtime"
 
-	"github.com/chaos-panel/chaos-panel/internal/controller/logs"
-	"github.com/chaos-panel/chaos-panel/utility/docs"
-	"github.com/chaos-panel/chaos-panel/utility/middleware"
+	"github.com/chaos-plus/chaos-plus/internal/controller/logs"
+	"github.com/chaos-plus/chaos-plus/utility/docs"
+	"github.com/chaos-plus/chaos-plus/utility/middleware"
+	"github.com/chaos-plus/chaos-plus/utility/migration"
 
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -21,6 +22,8 @@ var ServerCmd = &gcmd.Command{
 
 		runtime.SetMutexProfileFraction(1) // (非必需)开启对锁调用的跟踪
 		runtime.SetBlockProfileRate(1)     // (非必需)开启对阻塞操作的跟踪
+
+		migration.Migrate("manifest/sql/")
 
 		s := g.Server()
 		s.EnablePProf()

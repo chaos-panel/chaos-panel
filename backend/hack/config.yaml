@@ -9,7 +9,7 @@ gfcli:
       withTime: true
 
   build:
-    name:     "chaosctr"
+    name:     "chaosplus"
     arch:     "amd64"
     system:   "linux,darwin,windows"
     packSrc:   "manifest/config,manifest/i18n,manifest/sql,resource/public,resource/template"

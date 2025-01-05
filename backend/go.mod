@@ -1,4 +1,4 @@
-module github.com/chaos-panel/chaos-panel
+module github.com/chaos-plus/chaos-plus
 
 go 1.22.0
 

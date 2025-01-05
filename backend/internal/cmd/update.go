@@ -9,7 +9,7 @@ import (
 var UpdateCmd = &gcmd.Command{
 	Name:  "update",
 	Usage: "update",
-	Brief: "update chaosctr version",
+	Brief: "update chaosplus version",
 	Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 		return nil
 	},

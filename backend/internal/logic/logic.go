@@ -5,5 +5,5 @@
 package logic
 
 import (
-	_ "github.com/chaos-panel/chaos-panel/internal/logic/logs"
+	_ "github.com/chaos-plus/chaos-plus/internal/logic/logs"
 )
