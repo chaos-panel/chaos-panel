@@ -9,12 +9,12 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// Logs is the golang structure of table chaosplus_logs for DAO operations like Where/Data.
-type Logs struct {
-	g.Meta    `orm:"table:chaosplus_logs, do:true"`
-	Id        interface{} // ID
-	Status    interface{} // 状态
-	Log       interface{} // 日志
-	CreatedBy interface{} // 创建者
-	CreatedAt *gtime.Time // 创建时间
+// Tenant is the golang structure of table chaosplus_tenant for DAO operations like Where/Data.
+type Tenant struct {
+	g.Meta      `orm:"table:chaosplus_tenant, do:true"`
+	Id          interface{} // ID
+	Code        interface{} // 代号
+	Name        interface{} // 名称
+	TimeCreated *gtime.Time // 创建时间
+	TimeUpdated *gtime.Time // 更新时间
 }

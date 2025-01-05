@@ -1,8 +1,6 @@
 module github.com/chaos-plus/chaos-plus
 
-go 1.22.0
-
-toolchain go1.23.2
+go 1.23.4
 
 require (
 	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.8.3

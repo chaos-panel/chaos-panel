@@ -8,12 +8,15 @@ package service
 import (
 	"context"
 
+	v1 "github.com/chaos-plus/chaos-plus/api/logs/v1"
 	"github.com/chaos-plus/chaos-plus/internal/model/do"
 )
 
 type (
 	ILogs interface {
 		Create(ctx context.Context, log *do.Logs) error
+		GetList(ctx context.Context, req *v1.GetListReq) (res *v1.GetListRes, err error)
+		GetOne(ctx context.Context, req *v1.GetOneReq) (res *v1.GetOneRes, err error)
 	}
 )
 

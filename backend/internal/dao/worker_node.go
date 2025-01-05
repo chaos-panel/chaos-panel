@@ -8,19 +8,19 @@ import (
 	"github.com/chaos-plus/chaos-plus/internal/dao/internal"
 )
 
-// internalLogsDao is an internal type for wrapping the internal DAO implementation.
-type internalLogsDao = *internal.LogsDao
+// internalWorkerNodeDao is an internal type for wrapping the internal DAO implementation.
+type internalWorkerNodeDao = *internal.WorkerNodeDao
 
-// logsDao is the data access object for the table chaosplus_logs.
+// workerNodeDao is the data access object for the table chaosplus_worker_node.
 // You can define custom methods on it to extend its functionality as needed.
-type logsDao struct {
-	internalLogsDao
+type workerNodeDao struct {
+	internalWorkerNodeDao
 }
 
 var (
-	// Logs is a globally accessible object for table chaosplus_logs operations.
-	Logs = logsDao{
-		internal.NewLogsDao(),
+	// WorkerNode is a globally accessible object for table chaosplus_worker_node operations.
+	WorkerNode = workerNodeDao{
+		internal.NewWorkerNodeDao(),
 	}
 )
 

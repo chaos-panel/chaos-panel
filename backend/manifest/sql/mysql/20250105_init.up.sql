@@ -2,16 +2,18 @@
 -- ChaosPanel Init SQL
 -- -----------------------------------------------------
 
--- SET SESSION sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+-- SET GLOBAL tidb_skip_isolation_level_check=1;
+-- SET GLOBAL tidb_multi_statement_mode='ON';
+-- SET GLOBAL sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 
 -- DROP DATABASE IF EXISTS `chaos_panel`;
 -- CREATE DATABASE `chaos_panel`;
 -- USE `chaos_panel`;
 
 -- -----------------------------------------------------
--- Table `t_tenant`
+-- Table `chaosplus_tenant`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `t_tenant` (
+CREATE TABLE IF NOT EXISTS `chaosplus_tenant` (
     `id`           BIGINT UNSIGNED NOT NULL                                           COMMENT 'ID',
     `code`         NVARCHAR(16)    NOT NULL                                           COMMENT '代号',
     `name`         NVARCHAR(64)    NOT NULL                                           COMMENT '名称',
@@ -25,12 +27,12 @@ CREATE TABLE IF NOT EXISTS `t_tenant` (
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci
-  COMMENT = '租户表';
+  COMMENT = 'tenant';
 
 -- -----------------------------------------------------
--- Table `t_worker_node`
+-- Table `chaosplus_worker_node`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `t_worker_node` (
+CREATE TABLE IF NOT EXISTS `chaosplus_worker_node` (
     `id`           INT UNSIGNED AUTO_INCREMENT NOT NULL                                COMMENT '节点id',
     `port`         INT UNSIGNED                NOT NULL                                COMMENT '端口',
     `os_name`      VARCHAR(128)                NOT NULL DEFAULT ''                     COMMENT '系统名称',
@@ -50,12 +52,12 @@ CREATE TABLE IF NOT EXISTS `t_worker_node` (
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci
-  COMMENT = 'GUID工作节点';
+  COMMENT = 'worker node';
 
 -- -----------------------------------------------------
--- Table `logs`
+-- Table `chaosplus_logs`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `logs` (
+CREATE TABLE IF NOT EXISTS `chaosplus_logs` (
     `id`         BIGINT UNSIGNED NOT NULL                                             COMMENT 'ID',
     `status`     VARCHAR(16)     NOT NULL DEFAULT ''                                  COMMENT '状态',
     `log`        JSON            NOT NULL                                             COMMENT '日志',
@@ -67,6 +69,6 @@ CREATE TABLE IF NOT EXISTS `logs` (
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci
-  COMMENT = '操作记录表';
+  COMMENT = 'logs';
 
 SHOW TABLES;

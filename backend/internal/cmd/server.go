@@ -12,6 +12,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
+	"github.com/gogf/gf/v2/os/gres"
 )
 
 var ServerCmd = &gcmd.Command{
@@ -23,7 +24,8 @@ var ServerCmd = &gcmd.Command{
 		runtime.SetMutexProfileFraction(1) // (非必需)开启对锁调用的跟踪
 		runtime.SetBlockProfileRate(1)     // (非必需)开启对阻塞操作的跟踪
 
-		migration.Migrate("manifest/sql/")
+		gres.Dump()
+		migration.Migrate(ctx)
 
 		s := g.Server()
 		s.EnablePProf()

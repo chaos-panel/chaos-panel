@@ -1,25 +1,30 @@
 
 # CLI tool, only in development environment.
-# https://goframe.org/docs/cli
+# GoFrame CLI tool configuration.
 gfcli:
+
   gen:
     dao:
-    - link:   "tidb:2hcmR596VM9Fizz.root:wP3121gsk1AmPIDc@tcp(gateway01.eu-central-1.prod.aws.tidbcloud.com:4000)/chaos_panel?tls=true"
+    - link:     "mysql:2hcmR596VM9Fizz.root:wP3121gsk1AmPIDc@tcp(gateway01.eu-central-1.prod.aws.tidbcloud.com:4000)/chaos_panel?tls=true"
       jsonCase: "CamelLower"
+      tablesEx: "schema_migrations"
+      removePrefix: "chaosplus_"
       withTime: true
+      clear: true
 
   build:
-    name:     "chaosplus"
-    arch:     "amd64"
-    system:   "linux,darwin,windows"
+    name:      "chaosplus"
+    arch:      "amd64"
+    system:    "linux,darwin,windows"
     packSrc:   "manifest/config,manifest/i18n,manifest/sql,resource/public,resource/template"
-    mod:      "none"
-    version:  "v1.0.0"
-    path:   "./bin/"
-    extra:    ""
-
+    mod:       "none"
+    version:   "v1.0.0"
+    path:      "./bin/"
+    extra:     ""
+    varMap:
+      migration: "manifest/sql/:20250105"
 
   docker:
     build: "-a amd64 -s linux -p temp -ew"
     tagPrefixes:
-      - my.image.pub/my-app
+      - chaos.plus/chaosplus
