@@ -11,62 +11,62 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// TenantDao is the data access object for the table chaosplus_tenant.
-type TenantDao struct {
-	table   string        // table is the underlying table name of the DAO.
-	group   string        // group is the database configuration group name of the current DAO.
-	columns TenantColumns // columns contains all the column names of Table for convenient usage.
+// WorkerIdDao is the data access object for the table chaosplus_worker_id.
+type WorkerIdDao struct {
+	table   string          // table is the underlying table name of the DAO.
+	group   string          // group is the database configuration group name of the current DAO.
+	columns WorkerIdColumns // columns contains all the column names of Table for convenient usage.
 }
 
-// TenantColumns defines and stores column names for the table chaosplus_tenant.
-type TenantColumns struct {
+// WorkerIdColumns defines and stores column names for the table chaosplus_worker_id.
+type WorkerIdColumns struct {
 	Id          string // id
-	Code        string // code
-	Name        string // name
+	HostInfo    string // host info
+	HostTag     string // host tag
 	TimeCreated string // time created
 	TimeUpdated string // time updated
 }
 
-// tenantColumns holds the columns for the table chaosplus_tenant.
-var tenantColumns = TenantColumns{
+// workerIdColumns holds the columns for the table chaosplus_worker_id.
+var workerIdColumns = WorkerIdColumns{
 	Id:          "id",
-	Code:        "code",
-	Name:        "name",
+	HostInfo:    "host_info",
+	HostTag:     "host_tag",
 	TimeCreated: "time_created",
 	TimeUpdated: "time_updated",
 }
 
-// NewTenantDao creates and returns a new DAO object for table data access.
-func NewTenantDao() *TenantDao {
-	return &TenantDao{
+// NewWorkerIdDao creates and returns a new DAO object for table data access.
+func NewWorkerIdDao() *WorkerIdDao {
+	return &WorkerIdDao{
 		group:   "default",
-		table:   "chaosplus_tenant",
-		columns: tenantColumns,
+		table:   "chaosplus_worker_id",
+		columns: workerIdColumns,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of the current DAO.
-func (dao *TenantDao) DB() gdb.DB {
+func (dao *WorkerIdDao) DB() gdb.DB {
 	return g.DB(dao.group)
 }
 
 // Table returns the table name of the current DAO.
-func (dao *TenantDao) Table() string {
+func (dao *WorkerIdDao) Table() string {
 	return dao.table
 }
 
 // Columns returns all column names of the current DAO.
-func (dao *TenantDao) Columns() TenantColumns {
+func (dao *WorkerIdDao) Columns() WorkerIdColumns {
 	return dao.columns
 }
 
 // Group returns the database configuration group name of the current DAO.
-func (dao *TenantDao) Group() string {
+func (dao *WorkerIdDao) Group() string {
 	return dao.group
 }
 
 // Ctx creates and returns a Model for the current DAO. It automatically sets the context for the current operation.
-func (dao *TenantDao) Ctx(ctx context.Context) *gdb.Model {
+func (dao *WorkerIdDao) Ctx(ctx context.Context) *gdb.Model {
 	return dao.DB().Model(dao.table).Safe().Ctx(ctx)
 }
 
@@ -76,6 +76,6 @@ func (dao *TenantDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note: Do not commit or roll back the transaction in function f,
 // as it is automatically handled by this function.
-func (dao *TenantDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
+func (dao *WorkerIdDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

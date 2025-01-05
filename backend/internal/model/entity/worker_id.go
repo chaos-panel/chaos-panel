@@ -8,11 +8,11 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// Tenant is the golang structure for table tenant.
-type Tenant struct {
-	Id          uint64      `json:"id"          orm:"id"           ` // id
-	Code        string      `json:"code"        orm:"code"         ` // code
-	Name        string      `json:"name"        orm:"name"         ` // name
+// WorkerId is the golang structure for table worker_id.
+type WorkerId struct {
+	Id          uint        `json:"id"          orm:"id"           ` // id
+	HostInfo    string      `json:"hostInfo"    orm:"host_info"    ` // host info
+	HostTag     string      `json:"hostTag"     orm:"host_tag"     ` // host tag
 	TimeCreated *gtime.Time `json:"timeCreated" orm:"time_created" ` // time created
 	TimeUpdated *gtime.Time `json:"timeUpdated" orm:"time_updated" ` // time updated
 }

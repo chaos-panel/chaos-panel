@@ -1,5 +1,5 @@
 // ==========================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-05 22:44:22
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-06 00:06:52
 // ==========================================================================
 
 package internal
@@ -20,11 +20,11 @@ type LogsDao struct {
 
 // LogsColumns defines and stores column names for the table chaosplus_logs.
 type LogsColumns struct {
-	Id        string // ID
-	Status    string // 状态
-	Log       string // 日志
-	CreatedBy string // 创建者
-	CreatedAt string // 创建时间
+	Id        string // id
+	Status    string // status
+	Log       string // log
+	CreatedBy string // created by
+	CreatedAt string // created at
 }
 
 // logsColumns holds the columns for the table chaosplus_logs.

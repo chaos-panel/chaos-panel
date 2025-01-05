@@ -28,7 +28,7 @@ func New() service.ILogs {
 func (s *sLogs) Create(ctx context.Context, log *do.Logs) error {
 	log.Id = guid.NextId()
 	dao.Logs.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
-		_, err := dao.Logs.Ctx(ctx).Insert(log)
+		_, err := tx.Model(&entity.Logs{}).Insert(log)
 		if err != nil {
 			return err
 		}
@@ -44,7 +44,7 @@ func (s *sLogs) GetList(ctx context.Context, req *v1.GetListReq) (res *v1.GetLis
 	m = page.ParseQueriesFromCtx(ctx, m, req)
 	// m = page.NonDeleted(m)
 	// m = page.NonLocked(m)
-	m.ScanAndCount(&entities, &count, true)
+	err = m.ScanAndCount(&entities, &count, true)
 	res = &v1.GetListRes{}
 	res.Offset = req.Offset
 	res.Limit = req.Limit
@@ -56,6 +56,6 @@ func (s *sLogs) GetList(ctx context.Context, req *v1.GetListReq) (res *v1.GetLis
 
 func (s *sLogs) GetOne(ctx context.Context, req *v1.GetOneReq) (res *v1.GetOneRes, err error) {
 	m := dao.Logs.Ctx(ctx)
-	m.Where("id = ?", req.Id).Scan(&res)
+	err = m.Where("id = ?", req.Id).Scan(&res)
 	return
 }

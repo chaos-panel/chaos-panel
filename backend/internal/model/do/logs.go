@@ -1,5 +1,5 @@
 // =================================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-05 22:44:22
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-06 00:06:52
 // =================================================================================
 
 package do
@@ -12,9 +12,9 @@ import (
 // Logs is the golang structure of table chaosplus_logs for DAO operations like Where/Data.
 type Logs struct {
 	g.Meta    `orm:"table:chaosplus_logs, do:true"`
-	Id        interface{} // ID
-	Status    interface{} // 状态
-	Log       interface{} // 日志
-	CreatedBy interface{} // 创建者
-	CreatedAt *gtime.Time // 创建时间
+	Id        interface{} // id
+	Status    interface{} // status
+	Log       interface{} // log
+	CreatedBy interface{} // created by
+	CreatedAt *gtime.Time // created at
 }

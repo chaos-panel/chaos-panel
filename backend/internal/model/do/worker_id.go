@@ -9,12 +9,12 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// Tenant is the golang structure of table chaosplus_tenant for DAO operations like Where/Data.
-type Tenant struct {
-	g.Meta      `orm:"table:chaosplus_tenant, do:true"`
+// WorkerId is the golang structure of table chaosplus_worker_id for DAO operations like Where/Data.
+type WorkerId struct {
+	g.Meta      `orm:"table:chaosplus_worker_id, do:true"`
 	Id          interface{} // id
-	Code        interface{} // code
-	Name        interface{} // name
+	HostInfo    interface{} // host info
+	HostTag     interface{} // host tag
 	TimeCreated *gtime.Time // time created
 	TimeUpdated *gtime.Time // time updated
 }

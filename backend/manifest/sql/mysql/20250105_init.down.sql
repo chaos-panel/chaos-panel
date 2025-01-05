@@ -1,4 +1,4 @@
 
-DROP TABLE IF NOT EXISTS `chaosplus_tenant`;
-DROP TABLE IF NOT EXISTS `chaosplus_worker_node`;
-DROP TABLE IF NOT EXISTS `chaosplus_logs`;
+DROP TABLE IF EXISTS `chaosplus_worker_id`;
+DROP TABLE IF EXISTS `chaosplus_logs`;
+DROP TABLE IF EXISTS `chaosplus_tenant`;
