@@ -25,12 +25,12 @@ import (
 func Migrate(ctx context.Context) {
 	migration := gbuild.Info().Data["migration"]
 	if migration == nil {
-		g.Log().Info(ctx, "migration ignore: build info not found")
+		g.Log().Warning(ctx, "migration ignore: build info not found")
 		return
 	}
 	items := strings.Split(migration.(string), ",")
 	if len(items) == 0 {
-		g.Log().Info(ctx, "migration ignore: build info not found")
+		g.Log().Warning(ctx, "migration ignore: build info not found")
 		return
 	}
 	for _, item := range items {
@@ -63,17 +63,17 @@ func handleMigration(ctx context.Context, path string, version string) {
 	groups := GetDatabaseGroups()
 
 	if len(groups) <= 0 {
-		g.Log().Info(ctx, "migration ignore: no database config found")
+		g.Log().Warning(ctx, "migration ignore: no database config found")
 		return
 	}
 
 	for key, node := range groups {
-		entries := gres.ScanDirFile(path+key, "*.sql", true)
+		entries := gres.ScanDirFile(path+node.Type, "*.sql", true)
 		if len(entries) == 0 {
 			break
 		}
 
-		from, err := NewEmbededRes(path + key)
+		from, err := NewEmbededRes(path + node.Type)
 
 		if err != nil {
 			panic(err)
@@ -94,10 +94,14 @@ func handleMigration(ctx context.Context, path string, version string) {
 			to, err = mysql.WithInstance(db, &mysql.Config{})
 		case "mariadb":
 			to, err = mysql.WithInstance(db, &mysql.Config{})
-		case "sqlite":
-			to, err = sqlite3.WithInstance(db, &sqlite3.Config{})
 		case "pgsql":
 			to, err = postgres.WithInstance(db, &postgres.Config{})
+		case "postgres":
+			to, err = postgres.WithInstance(db, &postgres.Config{})
+		case "postgresql":
+			to, err = postgres.WithInstance(db, &postgres.Config{})
+		case "sqlite":
+			to, err = sqlite3.WithInstance(db, &sqlite3.Config{})
 		}
 		if err != nil {
 			panic(err)

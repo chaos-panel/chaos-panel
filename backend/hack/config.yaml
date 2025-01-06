@@ -5,7 +5,7 @@ gfcli:
 
   gen:
     dao:
-    - link:     "mysql:2hcmR596VM9Fizz.root:wP3121gsk1AmPIDc@tcp(gateway01.eu-central-1.prod.aws.tidbcloud.com:4000)/chaos_panel?tls=true"
+    - link:     "mysql:2hcmR596VM9Fizz.root:wP3121gsk1AmPIDc@tcp(gateway01.eu-central-1.prod.aws.tidbcloud.com:4000)/chaos_plus?tls=true"
       jsonCase: "CamelLower"
       tablesEx: "schema_migrations"
       removePrefix: "chaosplus_"

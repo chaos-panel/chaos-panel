@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'Chaos Panel',
+  title: 'Chaos Plus',
   tagline: 'an open source and web based server host management',
   favicon: 'img/favicon.ico',
 
@@ -68,9 +68,9 @@ const config: Config = {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: 'Chaos Panel',
+      title: 'Chaos Plus',
       logo: {
-        alt: 'Chaos Panel Logo',
+        alt: 'Chaos Plus Logo',
         src: 'img/logo.svg',
       },
       items: [

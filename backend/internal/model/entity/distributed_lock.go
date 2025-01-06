@@ -8,9 +8,9 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// WorkerId is the golang structure for table worker_id.
-type WorkerId struct {
-	Id        uint        `json:"id"        orm:"id"         ` // id
+// DistributedLock is the golang structure for table distributed_lock.
+type DistributedLock struct {
+	LockKey   string      `json:"lockKey"   orm:"lock_key"   ` // lock key
 	HostInfo  string      `json:"hostInfo"  orm:"host_info"  ` // host info
 	ExpiredAt *gtime.Time `json:"expiredAt" orm:"expired_at" ` // expired at
 	CreatedBy string      `json:"createdBy" orm:"created_by" ` // created by

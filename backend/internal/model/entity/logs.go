@@ -1,5 +1,5 @@
 // =================================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-06 00:06:52
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-07 00:57:54
 // =================================================================================
 
 package entity
@@ -10,9 +10,12 @@ import (
 
 // Logs is the golang structure for table logs.
 type Logs struct {
-	Id        uint64      `json:"id"        orm:"id"         ` // id
-	Status    string      `json:"status"    orm:"status"     ` // status
-	Log       string      `json:"log"       orm:"log"        ` // log
-	CreatedBy uint64      `json:"createdBy" orm:"created_by" ` // created by
-	CreatedAt *gtime.Time `json:"createdAt" orm:"created_at" ` // created at
+	Id         uint64      `json:"id"         orm:"id"          ` // id
+	TenantId   uint64      `json:"tenantId"   orm:"tenant_id"   ` // tenant id
+	ClientType string      `json:"clientType" orm:"client_type" ` // client type
+	ClientInfo string      `json:"clientInfo" orm:"client_info" ` // client info
+	Remark     string      `json:"remark"     orm:"remark"      ` // remark
+	Log        string      `json:"log"        orm:"log"         ` // log
+	CreatedBy  uint64      `json:"createdBy"  orm:"created_by"  ` // created by
+	CreatedAt  *gtime.Time `json:"createdAt"  orm:"created_at"  ` // locked at
 }

@@ -8,11 +8,15 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// Tenant is the golang structure for table tenant.
-type Tenant struct {
+// Settings is the golang structure for table settings.
+type Settings struct {
 	Id        uint64      `json:"id"        orm:"id"         ` // id
-	Code      string      `json:"code"      orm:"code"       ` // code
-	Name      string      `json:"name"      orm:"name"       ` // name
+	TenantId  uint64      `json:"tenantId"  orm:"tenant_id"  ` // tenant id
+	Group     string      `json:"group"     orm:"group"      ` // group
+	Key       string      `json:"key"       orm:"key"        ` // key
+	KeyName   string      `json:"keyName"   orm:"key_name"   ` // key display
+	Val       string      `json:"val"       orm:"val"        ` // value
+	ValType   string      `json:"valType"   orm:"val_type"   ` // value type
 	CreatedBy uint64      `json:"createdBy" orm:"created_by" ` // created by
 	CreatedAt *gtime.Time `json:"createdAt" orm:"created_at" ` // locked at
 	UpdatedBy uint64      `json:"updatedBy" orm:"updated_by" ` // updated by

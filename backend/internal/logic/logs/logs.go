@@ -8,7 +8,6 @@ import (
 	"github.com/chaos-plus/chaos-plus/internal/model/do"
 	"github.com/chaos-plus/chaos-plus/internal/model/entity"
 	"github.com/chaos-plus/chaos-plus/internal/service"
-	"github.com/chaos-plus/chaos-plus/utility/guid"
 	"github.com/chaos-plus/chaos-plus/utility/page"
 	"github.com/gogf/gf/v2/database/gdb"
 
@@ -26,15 +25,11 @@ func New() service.ILogs {
 }
 
 func (s *sLogs) Create(ctx context.Context, log *do.Logs) error {
-	log.Id = guid.NextId()
-	dao.Logs.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+	log.Id = service.Guid().NextId()
+	return dao.Logs.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		_, err := tx.Model(&entity.Logs{}).Insert(log)
-		if err != nil {
-			return err
-		}
-		return nil
+		return err
 	})
-	return nil
 }
 
 func (s *sLogs) GetList(ctx context.Context, req *v1.GetListReq) (res *v1.GetListRes, err error) {

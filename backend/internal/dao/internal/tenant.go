@@ -1,5 +1,5 @@
 // ==========================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-06 00:06:52
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-07 00:57:54
 // ==========================================================================
 
 package internal
@@ -20,20 +20,28 @@ type TenantDao struct {
 
 // TenantColumns defines and stores column names for the table chaosplus_tenant.
 type TenantColumns struct {
-	Id          string // id
-	Code        string // code
-	Name        string // name
-	TimeCreated string // time created
-	TimeUpdated string // time updated
+	Id        string // id
+	Code      string // code
+	Name      string // name
+	CreatedBy string // created by
+	CreatedAt string // locked at
+	UpdatedBy string // updated by
+	UpdatedAt string // time updated
+	DeletedBy string // deleted by
+	DeletedAt string // time deleted
 }
 
 // tenantColumns holds the columns for the table chaosplus_tenant.
 var tenantColumns = TenantColumns{
-	Id:          "id",
-	Code:        "code",
-	Name:        "name",
-	TimeCreated: "time_created",
-	TimeUpdated: "time_updated",
+	Id:        "id",
+	Code:      "code",
+	Name:      "name",
+	CreatedBy: "created_by",
+	CreatedAt: "created_at",
+	UpdatedBy: "updated_by",
+	UpdatedAt: "updated_at",
+	DeletedBy: "deleted_by",
+	DeletedAt: "deleted_at",
 }
 
 // NewTenantDao creates and returns a new DAO object for table data access.

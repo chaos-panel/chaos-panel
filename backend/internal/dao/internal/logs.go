@@ -1,5 +1,5 @@
 // ==========================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-06 00:06:52
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-07 00:57:54
 // ==========================================================================
 
 package internal
@@ -20,20 +20,26 @@ type LogsDao struct {
 
 // LogsColumns defines and stores column names for the table chaosplus_logs.
 type LogsColumns struct {
-	Id        string // id
-	Status    string // status
-	Log       string // log
-	CreatedBy string // created by
-	CreatedAt string // created at
+	Id         string // id
+	TenantId   string // tenant id
+	ClientType string // client type
+	ClientInfo string // client info
+	Remark     string // remark
+	Log        string // log
+	CreatedBy  string // created by
+	CreatedAt  string // locked at
 }
 
 // logsColumns holds the columns for the table chaosplus_logs.
 var logsColumns = LogsColumns{
-	Id:        "id",
-	Status:    "status",
-	Log:       "log",
-	CreatedBy: "created_by",
-	CreatedAt: "created_at",
+	Id:         "id",
+	TenantId:   "tenant_id",
+	ClientType: "client_type",
+	ClientInfo: "client_info",
+	Remark:     "remark",
+	Log:        "log",
+	CreatedBy:  "created_by",
+	CreatedAt:  "created_at",
 }
 
 // NewLogsDao creates and returns a new DAO object for table data access.

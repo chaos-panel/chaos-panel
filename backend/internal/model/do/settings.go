@@ -9,14 +9,20 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// WorkerId is the golang structure of table chaosplus_worker_id for DAO operations like Where/Data.
-type WorkerId struct {
-	g.Meta    `orm:"table:chaosplus_worker_id, do:true"`
+// Settings is the golang structure of table chaosplus_settings for DAO operations like Where/Data.
+type Settings struct {
+	g.Meta    `orm:"table:chaosplus_settings, do:true"`
 	Id        interface{} // id
-	HostInfo  interface{} // host info
-	ExpiredAt *gtime.Time // expired at
+	TenantId  interface{} // tenant id
+	Group     interface{} // group
+	Key       interface{} // key
+	KeyName   interface{} // key display
+	Val       interface{} // value
+	ValType   interface{} // value type
 	CreatedBy interface{} // created by
 	CreatedAt *gtime.Time // locked at
 	UpdatedBy interface{} // updated by
 	UpdatedAt *gtime.Time // time updated
+	DeletedBy interface{} // deleted by
+	DeletedAt *gtime.Time // time deleted
 }

@@ -6,9 +6,11 @@ import (
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gtime"
 
 	"github.com/chaos-plus/chaos-plus/internal/model/do"
 	"github.com/chaos-plus/chaos-plus/internal/service"
+	httputils "github.com/chaos-plus/chaos-plus/utility/http"
 
 	_ "github.com/chaos-plus/chaos-plus/internal/logic"
 )
@@ -64,7 +66,13 @@ func ApiRequestLogsHandler(r *ghttp.Request) {
 		return
 	}
 	service.Logs().Create(r.GetCtx(), &do.Logs{
-		Status: errorStatus,
-		Log:    json,
+		Id:         service.Guid().NextId(),
+		TenantId:   httputils.GetTenantId(r),
+		ClientType: "http api middleware",
+		ClientInfo: httputils.GetClientInfo(r),
+		Remark:     errorStatus,
+		Log:        json,
+		CreatedBy:  0, // TODO
+		CreatedAt:  gtime.Now(),
 	})
 }

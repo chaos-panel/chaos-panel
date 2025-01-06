@@ -4,19 +4,20 @@ import (
 	"github.com/yitter/idgenerator-go/idgen"
 
 	_ "github.com/chaos-plus/chaos-plus/internal/packed"
+	"github.com/chaos-plus/chaos-plus/internal/service"
 )
 
 type sGuid struct{}
 
-// func init() {
-// 	service.RegisterLogs(&sGuid{})
-// }
+func init() {
+	service.RegisterGuid(&sGuid{})
+}
 
-// func New() service.sGuid {
-// 	return &sGuid{}
-// }
+func New() service.IGuid {
+	return &sGuid{}
+}
 
-func Init() {
+func (s *sGuid) Init() {
 	var workerid = 1 // workerid.GetGuid()
 	var options = idgen.NewIdGeneratorOptions(uint16(workerid))
 	// options.WorkerIdBitLength = 10  // 默认值6，限定 WorkerId 最大值为2^6-1，即默认最多支持64个节点。
@@ -27,6 +28,6 @@ func Init() {
 	idgen.SetIdGenerator(options)
 }
 
-func NextId() uint64 {
+func (s *sGuid) NextId() uint64 {
 	return uint64(idgen.NextId())
 }
