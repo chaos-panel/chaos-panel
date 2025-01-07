@@ -30,14 +30,15 @@ var ServerCmd = &gcmd.Command{
 
 		// set global timezone
 		timezone := configs.GetConfig(ctx, "server.timezone")
-		if timezone != nil && gconv.String(timezone) != "" {
-			g.Log().Debug(ctx, "set timezone: "+gconv.String(timezone))
+		if timezone != nil && !timezone.IsNil() && gconv.String(timezone) != "" {
+			println("set timezone: " + gconv.String(timezone))
 			if err := gtime.SetTimeZone(gconv.String(timezone)); err != nil {
 				panic(err)
 			}
 		}
 
 		gres.Dump()
+
 		migration.Migrate(ctx)
 
 		service.WorkerId().InitOrPanic(ctx)
