@@ -40,17 +40,17 @@ func New() service.IWorkerId {
 	return &sWorkerId{}
 }
 
-func (s *sWorkerId) InitOrPanic(ctx context.Context) {
+func (s *sWorkerId) InitOrPanic(ctx context.Context, extra ...interface{}) {
 	const (
 		ttl = time.Minute * 15
 	)
-	getWorkerIdOrPanic(ctx, "", ttl)
+	getWorkerIdOrPanic(ctx, "", ttl, extra...)
 	g.Log().Debug(ctx, "get worker id ok: "+gvar.New(cache.Id).String())
 	if timer != nil {
 		return
 	}
 	timer = gtimer.AddSingleton(ctx, ttl/5, func(ctx context.Context) {
-		getWorkerIdOrPanic(ctx, cache.Tag, ttl)
+		getWorkerIdOrPanic(ctx, cache.Tag, ttl, extra)
 	})
 }
 
@@ -64,8 +64,8 @@ func (s *sWorkerId) GetWorkerId(ctx context.Context) uint {
 	return cache.Id
 }
 
-func getWorkerIdOrPanic(ctx context.Context, tag string, ttl time.Duration) uint {
-	workerId, err := getOrRefreshWorkerId(ctx, tag, ttl)
+func getWorkerIdOrPanic(ctx context.Context, tag string, ttl time.Duration, extra ...interface{}) uint {
+	workerId, err := getOrRefreshWorkerId(ctx, tag, ttl, extra...)
 	if err != nil {
 		panic(err)
 	}
@@ -81,17 +81,19 @@ func getWorkerIdOrPanic(ctx context.Context, tag string, ttl time.Duration) uint
 	return workerId.Id
 }
 
-func getOrRefreshWorkerId(ctx context.Context, tag string, ttl time.Duration) (*WorkerId, error) {
-	hostInfo, _ := host.Info()
+func getOrRefreshWorkerId(ctx context.Context, tag string, ttl time.Duration, extra ...interface{}) (*WorkerId, error) {
+	hostInfo, _ := host.InfoWithContext(ctx)
 
 	workerInfo := gjson.New(make(map[string]interface{}))
 	workerInfo.Set("hostId", hostInfo.HostID)
 	workerInfo.Set("hostname", hostInfo.Hostname)
 	workerInfo.Set("os", hostInfo.OS)
+	workerInfo.Set("os", hostInfo.OS)
 	workerInfo.Set("platform", hostInfo.Platform)
 	workerInfo.Set("platformFamily", hostInfo.PlatformFamily)
 	workerInfo.Set("platformVersion", hostInfo.PlatformVersion)
 	workerInfo.Set("nets", netutils.GetLanAll())
+	workerInfo.Set("extra", extra)
 
 	workerHost := workerInfo.String()
 	workerTag := tag
@@ -105,7 +107,7 @@ func getOrRefreshWorkerId(ctx context.Context, tag string, ttl time.Duration) (*
 			dlockKey = "__.inner.service.workerid.refresh"
 		)
 		// get distributed locker
-		err = service.Dlock().Lock(ctx, dlockKey, time.Minute, workerTag, workerHost)
+		err = service.Dlock().Lock(ctx, dlockKey, time.Minute*5, workerTag, workerHost)
 		if err != nil {
 			return err
 		}

@@ -41,11 +41,9 @@ var ServerCmd = &gcmd.Command{
 
 		migration.Migrate(ctx)
 
-		service.WorkerId().InitOrPanic(ctx)
-		service.Guid().InitOrPanic(ctx)
-
 		s := g.Server()
 		s.EnablePProf()
+
 		s.Group("/", func(group *ghttp.RouterGroup) {
 			group.Middleware(ghttp.MiddlewareHandlerResponse)
 			group.Middleware(middleware.ApiRequestNoCacheHandler)
@@ -63,6 +61,10 @@ var ServerCmd = &gcmd.Command{
 			})
 		})
 		docs.InitSwagger(ctx, s)
+
+		service.WorkerId().InitOrPanic(ctx, s.GetListenedAddress(), s.GetListenedPorts())
+		service.Guid().InitOrPanic(ctx)
+
 		s.Run()
 		return nil
 	},
