@@ -5,9 +5,13 @@
 
 package service
 
+import (
+	"context"
+)
+
 type (
 	IGuid interface {
-		Init()
+		InitOrPanic(ctx context.Context)
 		NextId() uint64
 	}
 )

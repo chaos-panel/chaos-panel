@@ -31,6 +31,7 @@ var ServerCmd = &gcmd.Command{
 		// set global timezone
 		timezone := configs.GetConfig(ctx, "server.timezone")
 		if timezone != nil && gconv.String(timezone) != "" {
+			g.Log().Debug(ctx, "set timezone: "+gconv.String(timezone))
 			if err := gtime.SetTimeZone(gconv.String(timezone)); err != nil {
 				panic(err)
 			}
@@ -39,13 +40,11 @@ var ServerCmd = &gcmd.Command{
 		gres.Dump()
 		migration.Migrate(ctx)
 
+		service.WorkerId().InitOrPanic(ctx)
+		service.Guid().InitOrPanic(ctx)
+
 		s := g.Server()
 		s.EnablePProf()
-
-		docs.InitSwagger(ctx, s)
-
-		service.WorkerId().InitOrPanic(ctx)
-
 		s.Group("/", func(group *ghttp.RouterGroup) {
 			group.Middleware(ghttp.MiddlewareHandlerResponse)
 			group.Middleware(middleware.ApiRequestNoCacheHandler)
@@ -62,6 +61,7 @@ var ServerCmd = &gcmd.Command{
 				})
 			})
 		})
+		docs.InitSwagger(ctx, s)
 		s.Run()
 		return nil
 	},
