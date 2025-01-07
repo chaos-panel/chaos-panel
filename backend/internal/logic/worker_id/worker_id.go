@@ -113,7 +113,7 @@ func getOrRefreshWorkerId(ctx context.Context, tag string, ttl time.Duration, ex
 		}
 		// release distributed locker
 		defer func() {
-			unlockerr := service.Dlock().Unlock(ctx, dlockKey, hostInfo.String())
+			unlockerr := service.Dlock().Unlock(ctx, dlockKey, workerTag)
 			if unlockerr != nil {
 				err = unlockerr
 			}

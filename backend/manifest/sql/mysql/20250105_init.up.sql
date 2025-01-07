@@ -85,13 +85,33 @@ CREATE TABLE IF NOT EXISTS `chaosplus_logs` (
 -- -----------------------------------------------------
 -- Table `chaosplus_settings`
 -- -----------------------------------------------------
-
 CREATE TABLE IF NOT EXISTS `chaosplus_settings` (
     `id` BIGINT UNSIGNED NOT NULL COMMENT 'id',
     `tenant_id` BIGINT UNSIGNED NOT NULL COMMENT 'tenant id',
     `group` VARCHAR(32) NOT NULL COMMENT 'group',
     `key` VARCHAR(32) NOT NULL COMMENT 'key',
-    `key_name` NVARCHAR(32) NOT NULL COMMENT 'key display',
+    `key_name` NVARCHAR (32) NOT NULL COMMENT 'key display',
+    `val` TEXT NOT NULL COMMENT 'value',
+    `val_type` VARCHAR(32) NOT NULL COMMENT 'value type',
+    `created_by` BIGINT UNSIGNED NOT NULL COMMENT 'created by',
+    `created_at` TIMESTAMP NOT NULL COMMENT 'locked at',
+    `updated_by` BIGINT UNSIGNED NOT NULL COMMENT 'updated by',
+    `updated_at` TIMESTAMP NOT NULL COMMENT 'time updated',
+    `deleted_by` BIGINT UNSIGNED NOT NULL COMMENT 'deleted by',
+    `deleted_at` TIMESTAMP NOT NULL COMMENT 'time deleted',
+    PRIMARY KEY (`id`),
+    INDEX (`created_at`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'settings';
+
+-- -----------------------------------------------------
+-- Table `chaosplus_snapshot`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `chaosplus_snapshot` (
+    `id` BIGINT UNSIGNED NOT NULL COMMENT 'id',
+    `tenant_id` BIGINT UNSIGNED NOT NULL COMMENT 'tenant id',
+    `group` VARCHAR(32) NOT NULL COMMENT 'group',
+    `key` VARCHAR(32) NOT NULL COMMENT 'key',
+    `key_name` NVARCHAR (32) NOT NULL COMMENT 'key display',
     `val` TEXT NOT NULL COMMENT 'value',
     `val_type` VARCHAR(32) NOT NULL COMMENT 'value type',
     `created_by` BIGINT UNSIGNED NOT NULL COMMENT 'created by',

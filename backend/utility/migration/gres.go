@@ -14,19 +14,14 @@ import (
 	"github.com/golang-migrate/migrate/v4/source"
 )
 
-// StringReadCloser 是一个结构体，实现了 io.ReadCloser 接口
 type StringReadCloser struct {
 	*strings.Reader
 }
 
-// Close 方法，实现 io.ReadCloser 接口的 Close 方法
 func (src *StringReadCloser) Close() error {
-	// 对于 StringReadCloser，Close 方法不需要做任何操作
-	// 因为 strings.Reader 不需要关闭
 	return nil
 }
 
-// NewStringReadCloser 返回一个新的 StringReadCloser 对象
 func NewStringReadCloser(s string) *StringReadCloser {
 	return &StringReadCloser{Reader: strings.NewReader(s)}
 }

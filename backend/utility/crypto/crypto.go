@@ -153,7 +153,7 @@ func AesEncryptByECB(data, key string) string {
 	// 密钥和待加密数据转成[]byte
 	originByte := []byte(data)
 	keyByte := []byte(key)
-	// 创建密码组，长度只能是16、24、32字节
+	// 创建密码组,长度只能是16、24、32字节
 	block, _ := aes.NewCipher(keyByte)
 	// 获取密钥长度
 	blockSize := block.BlockSize()
@@ -161,7 +161,7 @@ func AesEncryptByECB(data, key string) string {
 	originByte = PKCS7Padding(originByte, blockSize)
 	// 创建保存加密变量
 	encryptResult := make([]byte, len(originByte))
-	// CEB是把整个明文分成若干段相同的小段，然后对每一小段进行加密
+	// CEB是把整个明文分成若干段相同的小段,然后对每一小段进行加密
 	for bs, be := 0, blockSize; bs < len(originByte); bs, be = bs+blockSize, be+blockSize {
 		block.Encrypt(encryptResult[bs:be], originByte[bs:be])
 	}
@@ -189,7 +189,7 @@ func AesDecryptByECB(data, key string) string {
 	originByte, _ := base64.StdEncoding.DecodeString(data)
 	// 密钥和待加密数据转成[]byte
 	keyByte := []byte(key)
-	// 创建密码组，长度只能是16、24、32字节
+	// 创建密码组,长度只能是16、24、32字节
 	block, _ := aes.NewCipher(keyByte)
 	// 获取密钥长度
 	blockSize := block.BlockSize()
