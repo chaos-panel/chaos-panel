@@ -44,7 +44,7 @@ var ServerCmd = &gcmd.Command{
 
 		docs.InitSwagger(ctx, s)
 
-		service.WorkerId().GetWorkerId(ctx)
+		service.WorkerId().InitOrPanic(ctx)
 
 		s.Group("/", func(group *ghttp.RouterGroup) {
 			group.Middleware(ghttp.MiddlewareHandlerResponse)

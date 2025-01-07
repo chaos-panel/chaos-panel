@@ -48,6 +48,9 @@ func GetClientIP(r *ghttp.Request) string {
 		ip = r.Header.Get("WL-Proxy-Client-IP")
 	}
 	if ip == "" {
+		ip = r.Header.Get("WL-Proxy-Client-IP")
+	}
+	if ip == "" {
 		ip = r.RemoteAddr
 		if idx := strings.Index(ip, ":"); idx != -1 {
 			ip = ip[:idx]

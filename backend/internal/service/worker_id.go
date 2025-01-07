@@ -11,9 +11,8 @@ import (
 
 type (
 	IWorkerId interface {
-		RefreshWorkerId()
-		GetWorkerIdOrPanic(ctx context.Context) uint
-		GetWorkerId(ctx context.Context) (uint, error)
+		InitOrPanic(ctx context.Context)
+		GetWorkerId(ctx context.Context) uint
 	}
 )
 

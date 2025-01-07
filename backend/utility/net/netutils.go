@@ -1,6 +1,9 @@
 package netutils
 
-import "net"
+import (
+	"net"
+	"strings"
+)
 
 // get ipmac of lan
 func GetLanMacAll() []string {
@@ -44,6 +47,15 @@ func GetLanAll() map[string]string {
 				ip.Equal(net.ParseIP("0.0.0.0")) || ip.Equal(net.ParseIP("127.0.0.1")) {
 				continue
 			}
+			if strings.Contains(i.Name, "#") || strings.Contains(i.Name, "virtual") || strings.Contains(i.Name, "docker") || strings.Contains(i.Name, "veth") || strings.Contains(i.Name, "cali") ||
+				strings.Contains(i.Name, "vbox") || strings.Contains(i.Name, "vmnet") || strings.Contains(i.Name, "vnic") ||
+				strings.Contains(i.Name, "flannel") || strings.Contains(i.Name, "br-") || strings.Contains(i.Name, "macvlan") ||
+				strings.Contains(i.Name, "weave") || strings.Contains(i.Name, "virbr") || strings.Contains(i.Name, "ovs") ||
+				strings.Contains(i.Name, "br0") || strings.Contains(i.Name, "br1") || strings.Contains(i.Name, "tun") ||
+				strings.Contains(i.Name, "wg") || strings.Contains(i.Name, "tap") {
+				continue
+			}
+
 			ip = ip.To4()
 			if ip == nil {
 				continue // 非ipv4
@@ -56,4 +68,8 @@ func GetLanAll() map[string]string {
 		}
 	}
 	return lanAll
+}
+
+func IsIpv4(ip string) bool {
+	return net.ParseIP(ip).To4() != nil
 }
