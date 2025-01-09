@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `chaosplus_file_storage` (
+CREATE TABLE IF NOT EXISTS `chaosplus_file_storages` (
     `id` BIGINT UNSIGNED NOT NULL COMMENT 'ID',
     `content_length` BIGINT UNSIGNED NOT NULL COMMENT 'content length',
     `content_md5` CHAR(32) NOT NULL COMMENT 'content md5',
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `chaosplus_file_storage` (
     INDEX (`deleted_at`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = 'file storage physical';
 
-CREATE TABLE IF NOT EXISTS `chaosplus_file_uploading_task` (
+CREATE TABLE IF NOT EXISTS `chaosplus_file_uploading_tasks` (
     `id` BIGINT UNSIGNED NOT NULL COMMENT 'ID',
     `expired_at` TIMESTAMP NOT NULL COMMENT 'expired at',
     `created_by` BIGINT UNSIGNED NOT NULL COMMENT 'created by',
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `chaosplus_file_uploading_task` (
     INDEX (`updated_at`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = 'file uploading task';
 
-CREATE TABLE IF NOT EXISTS `chaosplus_file_uploading_part` (
+CREATE TABLE IF NOT EXISTS `chaosplus_file_uploading_parts` (
     `id` BIGINT UNSIGNED NOT NULL COMMENT 'ID',
     `expired_at` TIMESTAMP NOT NULL COMMENT 'expired at',
     `created_by` BIGINT UNSIGNED NOT NULL COMMENT 'created by',
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `chaosplus_file_uploading_part` (
     INDEX (`updated_at`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = 'file uploading part physical';
 
-CREATE TABLE IF NOT EXISTS `chaosplus_file_bucket` (
+CREATE TABLE IF NOT EXISTS `chaosplus_file_buckets` (
     `id` BIGINT UNSIGNED NOT NULL COMMENT 'ID',
     `tenant_id` BIGINT UNSIGNED NOT NULL COMMENT 'tenant id',
     `name` VARCHAR(128) NOT NULL COMMENT 'name',
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `chaosplus_file_bucket` (
     INDEX (`deleted_at`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = 'file logical bucket';
 
-CREATE TABLE IF NOT EXISTS `chaosplus_file` (
+CREATE TABLE IF NOT EXISTS `chaosplus_files` (
     `id` BIGINT UNSIGNED NOT NULL COMMENT 'ID',
     `bucket_id` BIGINT UNSIGNED NOT NULL COMMENT 'bucket id',
     `is_dir` TINYINT(1) UNSIGNED NOT NULL COMMENT 'is dir',
@@ -131,7 +131,7 @@ CREATE TABLE IF NOT EXISTS `chaosplus_file` (
     INDEX (`deleted_at`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = 'file logical';
 
-CREATE TABLE IF NOT EXISTS `chaosplus_file_closure` (
+CREATE TABLE IF NOT EXISTS `chaosplus_files_closure` (
     `ancestor_id` BIGINT UNSIGNED NOT NULL COMMENT 'ancestor id',
     `descendant_id` BIGINT UNSIGNED NOT NULL COMMENT 'descendant id',
     `distance` BIGINT NOT NULL COMMENT 'distance',
