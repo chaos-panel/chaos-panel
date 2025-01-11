@@ -1,5 +1,5 @@
 // ==========================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-07 10:37:30
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-11 20:17:21
 // ==========================================================================
 
 package internal
@@ -11,16 +11,16 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// WorkerIdDao is the data access object for the table chaosplus_worker_id.
-type WorkerIdDao struct {
-	table   string          // table is the underlying table name of the DAO.
-	group   string          // group is the database configuration group name of the current DAO.
-	columns WorkerIdColumns // columns contains all the column names of Table for convenient usage.
+// DistributedLocksDao is the data access object for the table chaosplus_distributed_locks.
+type DistributedLocksDao struct {
+	table   string                  // table is the underlying table name of the DAO.
+	group   string                  // group is the database configuration group name of the current DAO.
+	columns DistributedLocksColumns // columns contains all the column names of Table for convenient usage.
 }
 
-// WorkerIdColumns defines and stores column names for the table chaosplus_worker_id.
-type WorkerIdColumns struct {
-	Id        string // id
+// DistributedLocksColumns defines and stores column names for the table chaosplus_distributed_locks.
+type DistributedLocksColumns struct {
+	LockKey   string // lock key
 	HostInfo  string // host info
 	ExpiredAt string // expired at
 	CreatedBy string // created by
@@ -29,9 +29,9 @@ type WorkerIdColumns struct {
 	UpdatedAt string // time updated
 }
 
-// workerIdColumns holds the columns for the table chaosplus_worker_id.
-var workerIdColumns = WorkerIdColumns{
-	Id:        "id",
+// distributedLocksColumns holds the columns for the table chaosplus_distributed_locks.
+var distributedLocksColumns = DistributedLocksColumns{
+	LockKey:   "lock_key",
 	HostInfo:  "host_info",
 	ExpiredAt: "expired_at",
 	CreatedBy: "created_by",
@@ -40,37 +40,37 @@ var workerIdColumns = WorkerIdColumns{
 	UpdatedAt: "updated_at",
 }
 
-// NewWorkerIdDao creates and returns a new DAO object for table data access.
-func NewWorkerIdDao() *WorkerIdDao {
-	return &WorkerIdDao{
+// NewDistributedLocksDao creates and returns a new DAO object for table data access.
+func NewDistributedLocksDao() *DistributedLocksDao {
+	return &DistributedLocksDao{
 		group:   "default",
-		table:   "chaosplus_worker_id",
-		columns: workerIdColumns,
+		table:   "chaosplus_distributed_locks",
+		columns: distributedLocksColumns,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of the current DAO.
-func (dao *WorkerIdDao) DB() gdb.DB {
+func (dao *DistributedLocksDao) DB() gdb.DB {
 	return g.DB(dao.group)
 }
 
 // Table returns the table name of the current DAO.
-func (dao *WorkerIdDao) Table() string {
+func (dao *DistributedLocksDao) Table() string {
 	return dao.table
 }
 
 // Columns returns all column names of the current DAO.
-func (dao *WorkerIdDao) Columns() WorkerIdColumns {
+func (dao *DistributedLocksDao) Columns() DistributedLocksColumns {
 	return dao.columns
 }
 
 // Group returns the database configuration group name of the current DAO.
-func (dao *WorkerIdDao) Group() string {
+func (dao *DistributedLocksDao) Group() string {
 	return dao.group
 }
 
 // Ctx creates and returns a Model for the current DAO. It automatically sets the context for the current operation.
-func (dao *WorkerIdDao) Ctx(ctx context.Context) *gdb.Model {
+func (dao *DistributedLocksDao) Ctx(ctx context.Context) *gdb.Model {
 	return dao.DB().Model(dao.table).Safe().Ctx(ctx)
 }
 
@@ -80,6 +80,6 @@ func (dao *WorkerIdDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note: Do not commit or roll back the transaction in function f,
 // as it is automatically handled by this function.
-func (dao *WorkerIdDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
+func (dao *DistributedLocksDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

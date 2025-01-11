@@ -1,5 +1,5 @@
 // =================================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-07 10:37:30
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-11 20:17:21
 // =================================================================================
 
 package do
@@ -9,10 +9,10 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// DistributedLock is the golang structure of table chaosplus_distributed_lock for DAO operations like Where/Data.
-type DistributedLock struct {
-	g.Meta    `orm:"table:chaosplus_distributed_lock, do:true"`
-	LockKey   interface{} // lock key
+// WorkerIds is the golang structure of table chaosplus_worker_ids for DAO operations like Where/Data.
+type WorkerIds struct {
+	g.Meta    `orm:"table:chaosplus_worker_ids, do:true"`
+	Id        interface{} // id
 	HostInfo  interface{} // host info
 	ExpiredAt *gtime.Time // expired at
 	CreatedBy interface{} // created by

@@ -25,19 +25,19 @@ func New() service.IDlock {
 }
 
 func (s *sDlock) Lock(ctx context.Context, key string, ttl time.Duration, by string, host string) error {
-	return dao.DistributedLock.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
-		_, err := dao.DistributedLock.Ctx(ctx).Where("created_at <= ?", gtime.Now().Add(-ttl)).Delete()
+	return dao.DistributedLocks.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+		_, err := dao.DistributedLocks.Ctx(ctx).Where("created_at <= ?", gtime.Now().Add(-ttl)).Delete()
 		if err != nil {
 			return err
 		}
-		var exists *do.DistributedLock
-		err = dao.DistributedLock.Ctx(ctx).Where("lock_key = ?", key).Scan(&exists)
+		var exists *do.DistributedLocks
+		err = dao.DistributedLocks.Ctx(ctx).Where("lock_key = ?", key).Scan(&exists)
 		if err != nil {
 			return err
 		}
 		if exists == nil {
 			// try insert lock
-			_, err = dao.DistributedLock.Ctx(ctx).Insert(&do.DistributedLock{
+			_, err = dao.DistributedLocks.Ctx(ctx).Insert(&do.DistributedLocks{
 				LockKey:   key,
 				HostInfo:  host,
 				ExpiredAt: gtime.Now().Add(ttl),
@@ -53,7 +53,7 @@ func (s *sDlock) Lock(ctx context.Context, key string, ttl time.Duration, by str
 		}
 		// get the exists lock
 		exists = nil
-		err = dao.DistributedLock.Ctx(ctx).Where("lock_key = ?", key).Scan(&exists)
+		err = dao.DistributedLocks.Ctx(ctx).Where("lock_key = ?", key).Scan(&exists)
 		if err != nil {
 			return err
 		}
@@ -66,7 +66,7 @@ func (s *sDlock) Lock(ctx context.Context, key string, ttl time.Duration, by str
 			return errors.New("lock is already holded by: " + holder + ", not " + by)
 		}
 		// update the exists lock ttl
-		_, err = dao.DistributedLock.Ctx(ctx).Where("lock_key = ?", key).Update(&do.DistributedLock{
+		_, err = dao.DistributedLocks.Ctx(ctx).Where("lock_key = ?", key).Update(&do.DistributedLocks{
 			LockKey:   key,
 			HostInfo:  host,
 			ExpiredAt: gtime.Now().Add(ttl),
@@ -78,8 +78,8 @@ func (s *sDlock) Lock(ctx context.Context, key string, ttl time.Duration, by str
 }
 
 func (s *sDlock) Unlock(ctx context.Context, key string, by string) error {
-	return dao.DistributedLock.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
-		_, err := dao.DistributedLock.Ctx(ctx).Where("lock_key = ? and created_by = ?", key, by).Delete()
+	return dao.DistributedLocks.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+		_, err := dao.DistributedLocks.Ctx(ctx).Where("lock_key = ? and created_by = ?", key, by).Delete()
 		return err
 	})
 }

@@ -11,68 +11,66 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// LogsDao is the data access object for the table chaosplus_logs.
-type LogsDao struct {
-	table   string      // table is the underlying table name of the DAO.
-	group   string      // group is the database configuration group name of the current DAO.
-	columns LogsColumns // columns contains all the column names of Table for convenient usage.
+// LabelsDao is the data access object for the table chaosplus_labels.
+type LabelsDao struct {
+	table   string        // table is the underlying table name of the DAO.
+	group   string        // group is the database configuration group name of the current DAO.
+	columns LabelsColumns // columns contains all the column names of Table for convenient usage.
 }
 
-// LogsColumns defines and stores column names for the table chaosplus_logs.
-type LogsColumns struct {
-	Id         string // id
-	TenantId   string // tenant id
-	ClientType string // client type
-	ClientInfo string // client info
-	Remark     string // remark
-	Log        string // log
+// LabelsColumns defines and stores column names for the table chaosplus_labels.
+type LabelsColumns struct {
+	LabelId    string // label id
+	UnionId    string // union id
+	LabelIndex string // label index
+	LabelName  string // label name
+	LabelColor string // label color
 	CreatedBy  string // created by
 	CreatedAt  string // locked at
 }
 
-// logsColumns holds the columns for the table chaosplus_logs.
-var logsColumns = LogsColumns{
-	Id:         "id",
-	TenantId:   "tenant_id",
-	ClientType: "client_type",
-	ClientInfo: "client_info",
-	Remark:     "remark",
-	Log:        "log",
+// labelsColumns holds the columns for the table chaosplus_labels.
+var labelsColumns = LabelsColumns{
+	LabelId:    "label_id",
+	UnionId:    "union_id",
+	LabelIndex: "label_index",
+	LabelName:  "label_name",
+	LabelColor: "label_color",
 	CreatedBy:  "created_by",
 	CreatedAt:  "created_at",
 }
 
-// NewLogsDao creates and returns a new DAO object for table data access.
-func NewLogsDao() *LogsDao {
-	return &LogsDao{
+// NewLabelsDao creates and returns a new DAO object for table data access.
+func NewLabelsDao() *LabelsDao {
+	return &LabelsDao{
 		group:   "default",
-		table:   "chaosplus_logs",
-		columns: logsColumns,
+		table:   "chaosplus_labels",
+		columns: labelsColumns,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of the current DAO.
-func (dao *LogsDao) DB() gdb.DB {
+func (dao *LabelsDao) DB() gdb.DB {
 	return g.DB(dao.group)
 }
 
 // Table returns the table name of the current DAO.
-func (dao *LogsDao) Table() string {
+func (dao *LabelsDao) Table() string {
 	return dao.table
 }
 
 // Columns returns all column names of the current DAO.
-func (dao *LogsDao) Columns() LogsColumns {
+func (dao *LabelsDao) Columns() LabelsColumns {
 	return dao.columns
 }
 
 // Group returns the database configuration group name of the current DAO.
-func (dao *LogsDao) Group() string {
+func (dao *LabelsDao) Group() string {
 	return dao.group
 }
 
 // Ctx creates and returns a Model for the current DAO. It automatically sets the context for the current operation.
-func (dao *LogsDao) Ctx(ctx context.Context) *gdb.Model {
+func (dao *LabelsDao) Ctx(ctx context.Context) *gdb.Model {
 	return dao.DB().Model(dao.table).Safe().Ctx(ctx)
 }
 
@@ -82,6 +80,6 @@ func (dao *LogsDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note: Do not commit or roll back the transaction in function f,
 // as it is automatically handled by this function.
-func (dao *LogsDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
+func (dao *LabelsDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

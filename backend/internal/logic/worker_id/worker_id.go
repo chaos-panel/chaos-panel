@@ -102,7 +102,7 @@ func getOrRefreshWorkerId(ctx context.Context, tag string, ttl time.Duration, ex
 	}
 	workerId := gvar.New(0).Uint()
 
-	err := dao.WorkerId.Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
+	err := dao.WorkerIds.Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
 		const (
 			dlockKey = "__.inner.service.workerid.refresh"
 		)
@@ -120,18 +120,18 @@ func getOrRefreshWorkerId(ctx context.Context, tag string, ttl time.Duration, ex
 		}()
 
 		// delete expired workerId
-		dao.WorkerId.Ctx(ctx).Where("created_at <= ?", gtime.Now().Add(-ttl)).Delete()
+		dao.WorkerIds.Ctx(ctx).Where("created_at <= ?", gtime.Now().Add(-ttl)).Delete()
 
-		var exists *do.WorkerId
+		var exists *do.WorkerIds
 
 		// get exists
-		err = dao.WorkerId.Ctx(ctx).Where("created_by = ?", workerTag).Scan(&exists)
+		err = dao.WorkerIds.Ctx(ctx).Where("created_by = ?", workerTag).Scan(&exists)
 		if err != nil {
 			return err
 		}
 		if exists == nil {
 			// get all workerId
-			all, _, err := dao.WorkerId.Ctx(ctx).Fields("id").AllAndCount(false)
+			all, _, err := dao.WorkerIds.Ctx(ctx).Fields("id").AllAndCount(false)
 			if err != nil {
 				return err
 			}
@@ -150,7 +150,7 @@ func getOrRefreshWorkerId(ctx context.Context, tag string, ttl time.Duration, ex
 
 			}
 			// add workerId
-			_, err = dao.WorkerId.Ctx(ctx).Insert(&do.WorkerId{
+			_, err = dao.WorkerIds.Ctx(ctx).Insert(&do.WorkerIds{
 				Id:        workerId,
 				HostInfo:  workerHost,
 				ExpiredAt: gtime.Now().Add(ttl),
@@ -166,7 +166,7 @@ func getOrRefreshWorkerId(ctx context.Context, tag string, ttl time.Duration, ex
 		}
 		// get the exists workerId
 		exists = nil
-		err = dao.WorkerId.Ctx(ctx).Where("id = ?", workerId).Scan(&exists)
+		err = dao.WorkerIds.Ctx(ctx).Where("id = ?", workerId).Scan(&exists)
 		if err != nil {
 			return err
 		}
@@ -178,7 +178,7 @@ func getOrRefreshWorkerId(ctx context.Context, tag string, ttl time.Duration, ex
 			return errors.New("worker id is already holded by: " + holder + ", not " + workerTag)
 		}
 		// update the exists worker id ttl
-		_, err = dao.WorkerId.Ctx(ctx).Where("id = ?", workerId).Update(&do.WorkerId{
+		_, err = dao.WorkerIds.Ctx(ctx).Where("id = ?", workerId).Update(&do.WorkerIds{
 			Id:        workerId,
 			HostInfo:  workerHost,
 			ExpiredAt: gtime.Now().Add(ttl),

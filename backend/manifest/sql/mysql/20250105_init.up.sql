@@ -152,9 +152,9 @@ CREATE TABLE IF NOT EXISTS `chaosplus_labels` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `t_sequence` (
     `id` BIGINT UNSIGNED NOT NULL COMMENT 'ID',
-    `type` NVARCHAR (64) NOT NULL DEFAULT '' COMMENT '类型',
-    `sequence` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '序号',
+    `type` NVARCHAR (64) NOT NULL DEFAULT '' COMMENT 'type',
+    `sequence` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'sequence',
     PRIMARY KEY (`id`),
     UNIQUE (`type`),
     INDEX (`sequence`)
-) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT = '序号表';
+) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT = 'sequence table';

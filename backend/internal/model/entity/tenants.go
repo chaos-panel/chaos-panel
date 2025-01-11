@@ -1,5 +1,5 @@
 // =================================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-07 10:37:30
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-11 20:17:21
 // =================================================================================
 
 package entity
@@ -8,8 +8,8 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// Tenant is the golang structure for table tenant.
-type Tenant struct {
+// Tenants is the golang structure for table tenants.
+type Tenants struct {
 	Id        uint64      `json:"id"        orm:"id"         ` // id
 	Code      string      `json:"code"      orm:"code"       ` // code
 	Name      string      `json:"name"      orm:"name"       ` // name

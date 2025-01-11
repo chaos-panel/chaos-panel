@@ -15,14 +15,14 @@ gfcli:
   build:
     name:      "chaosplus"
     arch:      "amd64"
-    system:    "linux,darwin,windows"
+    system:    "windows,darwin,linux"
     packSrc:   "manifest/config,manifest/i18n,manifest/sql,resource/public,resource/template"
     mod:       "none"
     version:   "v1.0.0"
-    path:      "./bin/"
+    path:      "./bin"
     extra:     ""
     varMap:
-      migration: "manifest/sql/:20250105"
+      migration: "manifest/sql/:20250107"
 
   docker:
     build: "-a amd64 -s linux -p temp -ew"

@@ -1,5 +1,5 @@
 // =================================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-07 10:37:30
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-11 20:17:21
 // =================================================================================
 
 package entity
@@ -8,8 +8,8 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// WorkerId is the golang structure for table worker_id.
-type WorkerId struct {
+// WorkerIds is the golang structure for table worker_ids.
+type WorkerIds struct {
 	Id        uint        `json:"id"        orm:"id"         ` // id
 	HostInfo  string      `json:"hostInfo"  orm:"host_info"  ` // host info
 	ExpiredAt *gtime.Time `json:"expiredAt" orm:"expired_at" ` // expired at

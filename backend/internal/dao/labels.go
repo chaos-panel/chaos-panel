@@ -8,19 +8,19 @@ import (
 	"github.com/chaos-plus/chaos-plus/internal/dao/internal"
 )
 
-// internalWorkerIdDao is an internal type for wrapping the internal DAO implementation.
-type internalWorkerIdDao = *internal.WorkerIdDao
+// internalLabelsDao is an internal type for wrapping the internal DAO implementation.
+type internalLabelsDao = *internal.LabelsDao
 
-// workerIdDao is the data access object for the table chaosplus_worker_id.
+// labelsDao is the data access object for the table chaosplus_labels.
 // You can define custom methods on it to extend its functionality as needed.
-type workerIdDao struct {
-	internalWorkerIdDao
+type labelsDao struct {
+	internalLabelsDao
 }
 
 var (
-	// WorkerId is a globally accessible object for table chaosplus_worker_id operations.
-	WorkerId = workerIdDao{
-		internal.NewWorkerIdDao(),
+	// Labels is a globally accessible object for table chaosplus_labels operations.
+	Labels = labelsDao{
+		internal.NewLabelsDao(),
 	}
 )
 

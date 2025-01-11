@@ -9,20 +9,14 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// Settings is the golang structure of table chaosplus_settings for DAO operations like Where/Data.
-type Settings struct {
-	g.Meta    `orm:"table:chaosplus_settings, do:true"`
+// ChangeLogs is the golang structure of table chaosplus_change_logs for DAO operations like Where/Data.
+type ChangeLogs struct {
+	g.Meta    `orm:"table:chaosplus_change_logs, do:true"`
 	Id        interface{} // id
-	TenantId  interface{} // tenant id
-	Group     interface{} // group
-	Key       interface{} // key
-	KeyName   interface{} // key display
-	Val       interface{} // value
-	ValType   interface{} // value type
+	UnionId   interface{} // union id
+	Snapshot  interface{} // snapshot
 	CreatedBy interface{} // created by
 	CreatedAt *gtime.Time // locked at
-	UpdatedBy interface{} // updated by
-	UpdatedAt *gtime.Time // time updated
 	DeletedBy interface{} // deleted by
 	DeletedAt *gtime.Time // time deleted
 }

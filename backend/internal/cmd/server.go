@@ -60,6 +60,9 @@ var ServerCmd = &gcmd.Command{
 				})
 			})
 		})
+
+		s.SetServerRoot("resource/public")
+
 		docs.InitSwagger(ctx, s)
 
 		service.WorkerId().InitOrPanic(ctx, s.GetListenedAddress(), s.GetListenedPorts())

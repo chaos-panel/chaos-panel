@@ -1,5 +1,5 @@
 // =================================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-07 10:37:30
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-11 20:17:21
 // =================================================================================
 
 package do
@@ -9,9 +9,9 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// Tenant is the golang structure of table chaosplus_tenant for DAO operations like Where/Data.
-type Tenant struct {
-	g.Meta    `orm:"table:chaosplus_tenant, do:true"`
+// Tenants is the golang structure of table chaosplus_tenants for DAO operations like Where/Data.
+type Tenants struct {
+	g.Meta    `orm:"table:chaosplus_tenants, do:true"`
 	Id        interface{} // id
 	Code      interface{} // code
 	Name      interface{} // name

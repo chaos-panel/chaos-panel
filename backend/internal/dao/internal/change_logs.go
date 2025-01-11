@@ -1,5 +1,5 @@
 // ==========================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-07 10:37:30
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-11 20:17:21
 // ==========================================================================
 
 package internal
@@ -11,70 +11,66 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// TenantDao is the data access object for the table chaosplus_tenant.
-type TenantDao struct {
-	table   string        // table is the underlying table name of the DAO.
-	group   string        // group is the database configuration group name of the current DAO.
-	columns TenantColumns // columns contains all the column names of Table for convenient usage.
+// ChangeLogsDao is the data access object for the table chaosplus_change_logs.
+type ChangeLogsDao struct {
+	table   string            // table is the underlying table name of the DAO.
+	group   string            // group is the database configuration group name of the current DAO.
+	columns ChangeLogsColumns // columns contains all the column names of Table for convenient usage.
 }
 
-// TenantColumns defines and stores column names for the table chaosplus_tenant.
-type TenantColumns struct {
+// ChangeLogsColumns defines and stores column names for the table chaosplus_change_logs.
+type ChangeLogsColumns struct {
 	Id        string // id
-	Code      string // code
-	Name      string // name
+	UnionId   string // union id
+	Snapshot  string // snapshot
 	CreatedBy string // created by
 	CreatedAt string // locked at
-	UpdatedBy string // updated by
-	UpdatedAt string // time updated
 	DeletedBy string // deleted by
 	DeletedAt string // time deleted
 }
 
-// tenantColumns holds the columns for the table chaosplus_tenant.
-var tenantColumns = TenantColumns{
+// changeLogsColumns holds the columns for the table chaosplus_change_logs.
+var changeLogsColumns = ChangeLogsColumns{
 	Id:        "id",
-	Code:      "code",
-	Name:      "name",
+	UnionId:   "union_id",
+	Snapshot:  "snapshot",
 	CreatedBy: "created_by",
 	CreatedAt: "created_at",
-	UpdatedBy: "updated_by",
-	UpdatedAt: "updated_at",
 	DeletedBy: "deleted_by",
 	DeletedAt: "deleted_at",
 }
 
-// NewTenantDao creates and returns a new DAO object for table data access.
-func NewTenantDao() *TenantDao {
-	return &TenantDao{
+// NewChangeLogsDao creates and returns a new DAO object for table data access.
+func NewChangeLogsDao() *ChangeLogsDao {
+	return &ChangeLogsDao{
 		group:   "default",
-		table:   "chaosplus_tenant",
-		columns: tenantColumns,
+		table:   "chaosplus_change_logs",
+		columns: changeLogsColumns,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of the current DAO.
-func (dao *TenantDao) DB() gdb.DB {
+func (dao *ChangeLogsDao) DB() gdb.DB {
 	return g.DB(dao.group)
 }
 
 // Table returns the table name of the current DAO.
-func (dao *TenantDao) Table() string {
+func (dao *ChangeLogsDao) Table() string {
 	return dao.table
 }
 
 // Columns returns all column names of the current DAO.
-func (dao *TenantDao) Columns() TenantColumns {
+func (dao *ChangeLogsDao) Columns() ChangeLogsColumns {
 	return dao.columns
 }
 
 // Group returns the database configuration group name of the current DAO.
-func (dao *TenantDao) Group() string {
+func (dao *ChangeLogsDao) Group() string {
 	return dao.group
 }
 
 // Ctx creates and returns a Model for the current DAO. It automatically sets the context for the current operation.
-func (dao *TenantDao) Ctx(ctx context.Context) *gdb.Model {
+func (dao *ChangeLogsDao) Ctx(ctx context.Context) *gdb.Model {
 	return dao.DB().Model(dao.table).Safe().Ctx(ctx)
 }
 
@@ -84,6 +80,6 @@ func (dao *TenantDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note: Do not commit or roll back the transaction in function f,
 // as it is automatically handled by this function.
-func (dao *TenantDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
+func (dao *ChangeLogsDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

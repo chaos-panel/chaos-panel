@@ -8,19 +8,19 @@ import (
 	"github.com/chaos-plus/chaos-plus/internal/dao/internal"
 )
 
-// internalTenantDao is an internal type for wrapping the internal DAO implementation.
-type internalTenantDao = *internal.TenantDao
+// internalTSequenceDao is an internal type for wrapping the internal DAO implementation.
+type internalTSequenceDao = *internal.TSequenceDao
 
-// tenantDao is the data access object for the table chaosplus_tenant.
+// tSequenceDao is the data access object for the table t_sequence.
 // You can define custom methods on it to extend its functionality as needed.
-type tenantDao struct {
-	internalTenantDao
+type tSequenceDao struct {
+	internalTSequenceDao
 }
 
 var (
-	// Tenant is a globally accessible object for table chaosplus_tenant operations.
-	Tenant = tenantDao{
-		internal.NewTenantDao(),
+	// TSequence is a globally accessible object for table t_sequence operations.
+	TSequence = tSequenceDao{
+		internal.NewTSequenceDao(),
 	}
 )
 

@@ -3,6 +3,7 @@ package migration
 import (
 	// https://github.com/gogf/gf/tree/master/contrib/drivers
 	"context"
+	"errors"
 	"strconv"
 	"strings"
 
@@ -84,6 +85,9 @@ func handleMigration(ctx context.Context, path string, version string) {
 		if err != nil {
 			panic(err)
 		}
+		if err := db.Ping(); err != nil {
+			panic(err)
+		}
 
 		var to database.Driver
 
@@ -111,14 +115,26 @@ func handleMigration(ctx context.Context, path string, version string) {
 		if err != nil {
 			panic(err)
 		}
-		g.Log().Info(ctx, "db migration start")
-		err = m.Migrate(uint(steps))
+		cur, dirty, err := m.Version()
+		if !errors.Is(err, migrate.ErrNilVersion) {
+			panic(err)
+		}
+		if dirty {
+			panic("db migration error: dirty")
+		}
+		if cur == 0 {
+			g.Log().Info(ctx, "db migration start")
+			err = m.Up()
+		} else {
+			g.Log().Info(ctx, "db migration start: %d -> %d", cur, cur+uint(steps))
+			err = m.Migrate(uint(steps))
+		}
 		_, _ = m.Close()
 		if err == nil {
 			g.Log().Info(ctx, "db migration done")
 			return
 		}
-		if strings.Contains(err.Error(), "no change") {
+		if !errors.Is(err, migrate.ErrNoChange) {
 			g.Log().Info(ctx, "db migration done: no change")
 			return
 		} else {
