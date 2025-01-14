@@ -1,7 +1,7 @@
-
--- 
+--
 -- api, data, group, department, menu, button, ... tree
--- 
+--
+
 CREATE TABLE IF NOT EXISTS `chaosplus_resources` (
     `id` BIGINT UNSIGNED NOT NULL COMMENT 'ID',
     `tenant_id` BIGINT UNSIGNED NOT NULL COMMENT 'tenant id',
@@ -45,7 +45,6 @@ CREATE TABLE IF NOT EXISTS `chaosplus_resources_closure` (
     ),
     INDEX (`descendant_id`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'resource closure';
-
 
 CREATE TABLE IF NOT EXISTS `chaosplus_roles` (
     `id` BIGINT UNSIGNED NOT NULL COMMENT 'ID',
@@ -104,7 +103,11 @@ CREATE TABLE IF NOT EXISTS `chaosplus_permissions` (
     `updated_by` BIGINT UNSIGNED NOT NULL COMMENT 'updated by',
     `updated_at` TIMESTAMP NOT NULL COMMENT 'updated at',
     PRIMARY KEY (`id`),
-    UNIQUE (`role_id`, `resource_id`, `action`),
+    UNIQUE (
+        `role_id`,
+        `resource_id`,
+        `action`
+    ),
     INDEX (`resource_id`),
     INDEX (`created_by`),
     INDEX (`created_at`),
@@ -160,18 +163,21 @@ CREATE TABLE IF NOT EXISTS `chaosplus_organizations` (
     INDEX (`deleted_at`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'organization';
 
-
 CREATE TABLE IF NOT EXISTS `chaosplus_users` (
     `id` BIGINT UNSIGNED NOT NULL COMMENT 'ID',
     `tenant_id` BIGINT UNSIGNED NOT NULL COMMENT 'tenant id',
     `username` VARCHAR(64) NOT NULL COMMENT 'username',
+    `firstname` VARCHAR(64) NOT NULL COMMENT 'firstname',
+    `lastname` VARCHAR(64) NOT NULL COMMENT 'lastname',
     `nickname` VARCHAR(64) NOT NULL COMMENT 'nickname',
     `password` VARCHAR(128) NOT NULL COMMENT 'password',
     `phone` VARCHAR(32) NOT NULL COMMENT 'phone',
     `email` VARCHAR(128) NOT NULL COMMENT 'email',
+    `avatar_file_id` BIGINT UNSIGNED NOT NULL COMMENT 'avatar file id',
     `wx_union_id` VARCHAR(64) NOT NULL COMMENT 'wx union id',
     `wxma_open_id` VARCHAR(64) NOT NULL COMMENT 'wxma open id',
     `wxmp_open_id` VARCHAR(64) NOT NULL COMMENT 'wxmp open id',
+    `github_user_id` VARCHAR(64) NOT NULL COMMENT 'github user id',
     `locked_by` BIGINT UNSIGNED NOT NULL COMMENT 'locked by',
     `locked_at` TIMESTAMP NOT NULL COMMENT 'locked at',
     `created_by` BIGINT UNSIGNED NOT NULL COMMENT 'created by',
@@ -183,6 +189,10 @@ CREATE TABLE IF NOT EXISTS `chaosplus_users` (
     PRIMARY KEY (`id`),
     INDEX (`tenant_id`),
     UNIQUE (`username`),
+    UNIQUE (`wx_union_id`),
+    UNIQUE (`wxma_open_id`),
+    UNIQUE (`wxmp_open_id`),
+    UNIQUE (`github_user_id`),
     INDEX (`locked_by`),
     INDEX (`locked_at`),
     INDEX (`created_by`),
@@ -207,9 +217,6 @@ CREATE TABLE IF NOT EXISTS `chaosplus_users_roles` (
     INDEX (`created_by`),
     INDEX (`created_at`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'user roles';
-
-
-
 
 CREATE TABLE IF NOT EXISTS `chaosplus_auth_clients` (
     `id` BIGINT UNSIGNED NOT NULL COMMENT 'ID',

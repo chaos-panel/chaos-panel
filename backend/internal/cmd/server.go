@@ -4,6 +4,7 @@ import (
 	"context"
 	"runtime"
 
+	"github.com/chaos-plus/chaos-plus/internal/controller/apis"
 	"github.com/chaos-plus/chaos-plus/internal/controller/logs"
 	"github.com/chaos-plus/chaos-plus/internal/service"
 	"github.com/chaos-plus/chaos-plus/utility/configs"
@@ -50,16 +51,17 @@ var ServerCmd = &gcmd.Command{
 			group.Middleware(middleware.ApiRequestDefaultCorsHandler)
 			group.Middleware(middleware.ApiRequestLogsHandler)
 			group.Bind(
+				apis.NewV1(),
 				logs.NewV1(),
 			)
 		})
-		s.Group("/tpl", func(group *ghttp.RouterGroup) {
-			group.GET("/template", func(r *ghttp.Request) {
-				r.Response.WriteTplDefault(g.Map{
-					"name": "GoFrame",
-				})
-			})
-		})
+		// s.Group("/tpl", func(group *ghttp.RouterGroup) {
+		// 	group.GET("/template", func(r *ghttp.Request) {
+		// 		r.Response.WriteTplDefault(g.Map{
+		// 			"name": "GoFrame",
+		// 		})
+		// 	})
+		// })
 
 		s.SetServerRoot("resource/public")
 

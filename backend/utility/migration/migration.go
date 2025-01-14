@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/chaos-plus/chaos-plus/utility/utils"
 	_ "github.com/gogf/gf/contrib/drivers/mysql/v2"
 	_ "github.com/gogf/gf/contrib/drivers/pgsql/v2"
 	_ "github.com/gogf/gf/contrib/drivers/sqlite/v2"
@@ -61,14 +62,14 @@ func handleMigration(ctx context.Context, path string, version string) {
 		panic(err)
 	}
 
-	groups := GetDatabaseGroups()
+	groups := utils.GetDatabaseGroups()
 
 	if len(groups) <= 0 {
 		g.Log().Warning(ctx, "migration ignore: no database config found")
 		return
 	}
 
-	for key, node := range groups {
+	for group, node := range groups {
 		entries := gres.ScanDirFile(path+node.Type, "*.sql", true)
 		if len(entries) == 0 {
 			break
@@ -80,7 +81,7 @@ func handleMigration(ctx context.Context, path string, version string) {
 			panic(err)
 		}
 
-		db, err := g.DB(key).Open(node)
+		db, err := g.DB(group).Open(node)
 
 		if err != nil {
 			panic(err)
