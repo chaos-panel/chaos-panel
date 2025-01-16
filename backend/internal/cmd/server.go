@@ -43,7 +43,7 @@ var ServerCmd = &gcmd.Command{
 		migration.Migrate(ctx)
 
 		s := g.Server()
-		s.EnablePProf()
+		// s.EnablePProf() // use config file to set
 
 		s.Group("/", func(group *ghttp.RouterGroup) {
 			group.Middleware(ghttp.MiddlewareHandlerResponse)
@@ -63,7 +63,7 @@ var ServerCmd = &gcmd.Command{
 		// 	})
 		// })
 
-		s.SetServerRoot("resource/public")
+		// s.SetServerRoot("resource/public")  // use config file to set
 
 		docs.InitSwagger(ctx, s)
 

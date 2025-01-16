@@ -1,5 +1,5 @@
 // ==========================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-14 17:54:17
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-16 23:38:52
 // ==========================================================================
 
 package internal
@@ -11,58 +11,58 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// TSequenceDao is the data access object for the table t_sequence.
-type TSequenceDao struct {
-	table   string           // table is the underlying table name of the DAO.
-	group   string           // group is the database configuration group name of the current DAO.
-	columns TSequenceColumns // columns contains all the column names of Table for convenient usage.
+// SequenceDao is the data access object for the table chaosplus_sequence.
+type SequenceDao struct {
+	table   string          // table is the underlying table name of the DAO.
+	group   string          // group is the database configuration group name of the current DAO.
+	columns SequenceColumns // columns contains all the column names of Table for convenient usage.
 }
 
-// TSequenceColumns defines and stores column names for the table t_sequence.
-type TSequenceColumns struct {
+// SequenceColumns defines and stores column names for the table chaosplus_sequence.
+type SequenceColumns struct {
 	Id       string // ID
 	Type     string // type
 	Sequence string // sequence
 }
 
-// tSequenceColumns holds the columns for the table t_sequence.
-var tSequenceColumns = TSequenceColumns{
+// sequenceColumns holds the columns for the table chaosplus_sequence.
+var sequenceColumns = SequenceColumns{
 	Id:       "id",
 	Type:     "type",
 	Sequence: "sequence",
 }
 
-// NewTSequenceDao creates and returns a new DAO object for table data access.
-func NewTSequenceDao() *TSequenceDao {
-	return &TSequenceDao{
+// NewSequenceDao creates and returns a new DAO object for table data access.
+func NewSequenceDao() *SequenceDao {
+	return &SequenceDao{
 		group:   "default",
-		table:   "t_sequence",
-		columns: tSequenceColumns,
+		table:   "chaosplus_sequence",
+		columns: sequenceColumns,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of the current DAO.
-func (dao *TSequenceDao) DB() gdb.DB {
+func (dao *SequenceDao) DB() gdb.DB {
 	return g.DB(dao.group)
 }
 
 // Table returns the table name of the current DAO.
-func (dao *TSequenceDao) Table() string {
+func (dao *SequenceDao) Table() string {
 	return dao.table
 }
 
 // Columns returns all column names of the current DAO.
-func (dao *TSequenceDao) Columns() TSequenceColumns {
+func (dao *SequenceDao) Columns() SequenceColumns {
 	return dao.columns
 }
 
 // Group returns the database configuration group name of the current DAO.
-func (dao *TSequenceDao) Group() string {
+func (dao *SequenceDao) Group() string {
 	return dao.group
 }
 
 // Ctx creates and returns a Model for the current DAO. It automatically sets the context for the current operation.
-func (dao *TSequenceDao) Ctx(ctx context.Context) *gdb.Model {
+func (dao *SequenceDao) Ctx(ctx context.Context) *gdb.Model {
 	return dao.DB().Model(dao.table).Safe().Ctx(ctx)
 }
 
@@ -72,6 +72,6 @@ func (dao *TSequenceDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note: Do not commit or roll back the transaction in function f,
 // as it is automatically handled by this function.
-func (dao *TSequenceDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
+func (dao *SequenceDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

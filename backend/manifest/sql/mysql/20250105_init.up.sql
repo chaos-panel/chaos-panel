@@ -148,9 +148,9 @@ CREATE TABLE IF NOT EXISTS `chaosplus_labels` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'labels';
 
 -- -----------------------------------------------------
--- Table `t_sequence`
+-- Table `chaosplus_sequence`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `t_sequence` (
+CREATE TABLE IF NOT EXISTS `chaosplus_sequence` (
     `id` BIGINT UNSIGNED NOT NULL COMMENT 'ID',
     `type` NVARCHAR (64) NOT NULL DEFAULT '' COMMENT 'type',
     `sequence` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'sequence',

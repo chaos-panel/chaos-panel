@@ -1,5 +1,5 @@
 // =================================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-14 17:54:17
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-16 23:38:52
 // =================================================================================
 
 package do
@@ -8,9 +8,9 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// TSequence is the golang structure of table t_sequence for DAO operations like Where/Data.
-type TSequence struct {
-	g.Meta   `orm:"table:t_sequence, do:true"`
+// Sequence is the golang structure of table chaosplus_sequence for DAO operations like Where/Data.
+type Sequence struct {
+	g.Meta   `orm:"table:chaosplus_sequence, do:true"`
 	Id       interface{} // ID
 	Type     interface{} // type
 	Sequence interface{} // sequence

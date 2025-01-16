@@ -11,39 +11,37 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// SettingsDao is the data access object for the table chaosplus_settings.
-type SettingsDao struct {
-	table   string          // table is the underlying table name of the DAO.
-	group   string          // group is the database configuration group name of the current DAO.
-	columns SettingsColumns // columns contains all the column names of Table for convenient usage.
+// TerminalsDao is the data access object for the table chaosplus_terminals.
+type TerminalsDao struct {
+	table   string           // table is the underlying table name of the DAO.
+	group   string           // group is the database configuration group name of the current DAO.
+	columns TerminalsColumns // columns contains all the column names of Table for convenient usage.
 }
 
-// SettingsColumns defines and stores column names for the table chaosplus_settings.
-type SettingsColumns struct {
-	Id        string // id
+// TerminalsColumns defines and stores column names for the table chaosplus_terminals.
+type TerminalsColumns struct {
+	Id        string // ID
 	TenantId  string // tenant id
-	Group     string // group
-	Key       string // key
-	KeyName   string // key display
-	Val       string // value
-	ValType   string // value type
+	Host      string // host
+	Port      string // port
+	Username  string // username
+	Password  string // password
 	CreatedBy string // created by
-	CreatedAt string // locked at
+	CreatedAt string // created at
 	UpdatedBy string // updated by
-	UpdatedAt string // time updated
+	UpdatedAt string // updated at
 	DeletedBy string // deleted by
-	DeletedAt string // time deleted
+	DeletedAt string // deleted at
 }
 
-// settingsColumns holds the columns for the table chaosplus_settings.
-var settingsColumns = SettingsColumns{
+// terminalsColumns holds the columns for the table chaosplus_terminals.
+var terminalsColumns = TerminalsColumns{
 	Id:        "id",
 	TenantId:  "tenant_id",
-	Group:     "group",
-	Key:       "key",
-	KeyName:   "key_name",
-	Val:       "val",
-	ValType:   "val_type",
+	Host:      "host",
+	Port:      "port",
+	Username:  "username",
+	Password:  "password",
 	CreatedBy: "created_by",
 	CreatedAt: "created_at",
 	UpdatedBy: "updated_by",
@@ -52,37 +50,37 @@ var settingsColumns = SettingsColumns{
 	DeletedAt: "deleted_at",
 }
 
-// NewSettingsDao creates and returns a new DAO object for table data access.
-func NewSettingsDao() *SettingsDao {
-	return &SettingsDao{
+// NewTerminalsDao creates and returns a new DAO object for table data access.
+func NewTerminalsDao() *TerminalsDao {
+	return &TerminalsDao{
 		group:   "default",
-		table:   "chaosplus_settings",
-		columns: settingsColumns,
+		table:   "chaosplus_terminals",
+		columns: terminalsColumns,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of the current DAO.
-func (dao *SettingsDao) DB() gdb.DB {
+func (dao *TerminalsDao) DB() gdb.DB {
 	return g.DB(dao.group)
 }
 
 // Table returns the table name of the current DAO.
-func (dao *SettingsDao) Table() string {
+func (dao *TerminalsDao) Table() string {
 	return dao.table
 }
 
 // Columns returns all column names of the current DAO.
-func (dao *SettingsDao) Columns() SettingsColumns {
+func (dao *TerminalsDao) Columns() TerminalsColumns {
 	return dao.columns
 }
 
 // Group returns the database configuration group name of the current DAO.
-func (dao *SettingsDao) Group() string {
+func (dao *TerminalsDao) Group() string {
 	return dao.group
 }
 
 // Ctx creates and returns a Model for the current DAO. It automatically sets the context for the current operation.
-func (dao *SettingsDao) Ctx(ctx context.Context) *gdb.Model {
+func (dao *TerminalsDao) Ctx(ctx context.Context) *gdb.Model {
 	return dao.DB().Model(dao.table).Safe().Ctx(ctx)
 }
 
@@ -92,6 +90,6 @@ func (dao *SettingsDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note: Do not commit or roll back the transaction in function f,
 // as it is automatically handled by this function.
-func (dao *SettingsDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
+func (dao *TerminalsDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

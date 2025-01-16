@@ -127,8 +127,6 @@ CREATE TABLE IF NOT EXISTS `chaosplus_permissions_additional` (
     `updated_at` TIMESTAMP NOT NULL COMMENT 'updated at',
     PRIMARY KEY (`id`),
     UNIQUE (`role_id`, `type`, `value`),
-    INDEX (`valided_at`),
-    INDEX (`expired_at`),
     INDEX (`created_by`),
     INDEX (`created_at`),
     INDEX (`updated_by`),
@@ -233,7 +231,13 @@ CREATE TABLE IF NOT EXISTS `chaosplus_auth_clients` (
     `deleted_by` BIGINT UNSIGNED NOT NULL COMMENT 'deleted by',
     `deleted_at` TIMESTAMP NOT NULL COMMENT 'deleted at',
     PRIMARY KEY (`client_id`),
-    INDEX (`tenant_id`)
+    INDEX (`tenant_id`),
+    INDEX (`created_by`),
+    INDEX (`created_at`),
+    INDEX (`updated_by`),
+    INDEX (`updated_at`),
+    INDEX (`deleted_by`),
+    INDEX (`deleted_at`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'auth client';
 
 CREATE TABLE IF NOT EXISTS `chaosplus_auth_tokens` (
@@ -241,10 +245,12 @@ CREATE TABLE IF NOT EXISTS `chaosplus_auth_tokens` (
     `tenant_id` BIGINT UNSIGNED NOT NULL COMMENT 'tenant id',
     `user_id` BIGINT UNSIGNED NOT NULL COMMENT 'user id',
     `client_info` TEXT NOT NULL COMMENT 'client info',
-    `access_token` VARCHAR(128) NOT NULL COMMENT 'access token',
+    `access_token` VARCHAR(1024) NOT NULL COMMENT 'access token',
+    `access_token_jti` VARCHAR(128) NOT NULL COMMENT 'access token jti',
     `access_token_expired_at` TIMESTAMP NOT NULL COMMENT 'access token expires at',
-    `refresh_token` VARCHAR(128) NOT NULL COMMENT 'refresh token',
+    `refresh_token` VARCHAR(1024) NOT NULL COMMENT 'refresh token',
     `refresh_token_expired_at` TIMESTAMP NOT NULL COMMENT 'refresh token expires at',
+    `created_by` BIGINT UNSIGNED NOT NULL COMMENT 'created by',
     `created_at` TIMESTAMP NOT NULL COMMENT 'created at',
     `updated_by` BIGINT UNSIGNED NOT NULL COMMENT 'updated by',
     `updated_at` TIMESTAMP NOT NULL COMMENT 'updated at',
@@ -252,5 +258,12 @@ CREATE TABLE IF NOT EXISTS `chaosplus_auth_tokens` (
     `deleted_at` TIMESTAMP NOT NULL COMMENT 'deleted at',
     PRIMARY KEY (`id`),
     UNIQUE (`tenant_id`),
+    INDEX (`access_token_jti`),
     INDEX (`user_id`),
+    INDEX (`created_by`),
+    INDEX (`created_at`),
+    INDEX (`updated_by`),
+    INDEX (`updated_at`),
+    INDEX (`deleted_by`),
+    INDEX (`deleted_at`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'auth token';

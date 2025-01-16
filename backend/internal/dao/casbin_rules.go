@@ -8,19 +8,19 @@ import (
 	"github.com/chaos-plus/chaos-plus/internal/dao/internal"
 )
 
-// internalTSequenceDao is an internal type for wrapping the internal DAO implementation.
-type internalTSequenceDao = *internal.TSequenceDao
+// internalCasbinRulesDao is an internal type for wrapping the internal DAO implementation.
+type internalCasbinRulesDao = *internal.CasbinRulesDao
 
-// tSequenceDao is the data access object for the table t_sequence.
+// casbinRulesDao is the data access object for the table chaosplus_casbin_rules.
 // You can define custom methods on it to extend its functionality as needed.
-type tSequenceDao struct {
-	internalTSequenceDao
+type casbinRulesDao struct {
+	internalCasbinRulesDao
 }
 
 var (
-	// TSequence is a globally accessible object for table t_sequence operations.
-	TSequence = tSequenceDao{
-		internal.NewTSequenceDao(),
+	// CasbinRules is a globally accessible object for table chaosplus_casbin_rules operations.
+	CasbinRules = casbinRulesDao{
+		internal.NewCasbinRulesDao(),
 	}
 )
 

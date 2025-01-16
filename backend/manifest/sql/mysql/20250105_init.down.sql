@@ -9,3 +9,7 @@ DROP TABLE IF EXISTS `chaosplus_logs`;
 DROP TABLE IF EXISTS `chaosplus_settings`;
 
 DROP TABLE IF EXISTS `chaosplus_change_logs`;
+
+DROP TABLE IF EXISTS `chaosplus_labels`;
+
+DROP TABLE IF EXISTS `chaosplus_sequence`;

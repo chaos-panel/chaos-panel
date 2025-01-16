@@ -102,7 +102,7 @@ var (
 			<title>OpenAPI UI</title>
 		</head>
 		<body>
-			<div id="openapi-ui-container" spec-url="{SwaggerUIDocUrl}" theme="light"></div>
+			<div id="openapi-ui-container" spec-url="/api.json" theme="light"></div>
 			<script src="https://cdn.jsdelivr.net/npm/openapi-ui-dist@latest/lib/openapi-ui.umd.js"></script>
 		</body>
 		</html>
