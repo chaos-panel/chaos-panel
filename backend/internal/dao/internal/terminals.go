@@ -1,5 +1,5 @@
 // ==========================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-16 23:38:52
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-18 00:02:22
 // ==========================================================================
 
 package internal
@@ -22,6 +22,7 @@ type TerminalsDao struct {
 type TerminalsColumns struct {
 	Id        string // ID
 	TenantId  string // tenant id
+	Type      string // type
 	Host      string // host
 	Port      string // port
 	Username  string // username
@@ -38,6 +39,7 @@ type TerminalsColumns struct {
 var terminalsColumns = TerminalsColumns{
 	Id:        "id",
 	TenantId:  "tenant_id",
+	Type:      "type",
 	Host:      "host",
 	Port:      "port",
 	Username:  "username",

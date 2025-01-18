@@ -8,29 +8,28 @@ package service
 import (
 	"context"
 
-	v1 "github.com/chaos-plus/chaos-plus/api/logs/v1"
-	"github.com/chaos-plus/chaos-plus/internal/model/do"
+	v1 "github.com/chaos-plus/chaos-plus/api/terminals/v1"
 )
 
 type (
-	ILogs interface {
-		Create(ctx context.Context, log *do.Logs) error
+	ITerminal interface {
+		Create(ctx context.Context, req *v1.CreateReq) (res *v1.CreateRes, err error)
 		GetOne(ctx context.Context, req *v1.GetOneReq) (res *v1.GetOneRes, err error)
 		GetList(ctx context.Context, req *v1.GetListReq) (res *v1.GetListRes, err error)
 	}
 )
 
 var (
-	localLogs ILogs
+	localTerminal ITerminal
 )
 
-func Logs() ILogs {
-	if localLogs == nil {
-		panic("implement not found for interface ILogs, forgot register?")
+func Terminal() ITerminal {
+	if localTerminal == nil {
+		panic("implement not found for interface ITerminal, forgot register?")
 	}
-	return localLogs
+	return localTerminal
 }
 
-func RegisterLogs(i ILogs) {
-	localLogs = i
+func RegisterTerminal(i ITerminal) {
+	localTerminal = i
 }

@@ -1,5 +1,5 @@
 // =================================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-16 23:38:52
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-18 00:02:22
 // =================================================================================
 
 package entity
@@ -12,6 +12,7 @@ import (
 type Terminals struct {
 	Id        uint64      `json:"id"        orm:"id"         ` // ID
 	TenantId  uint64      `json:"tenantId"  orm:"tenant_id"  ` // tenant id
+	Type      string      `json:"type"      orm:"type"       ` // type
 	Host      string      `json:"host"      orm:"host"       ` // host
 	Port      uint64      `json:"port"      orm:"port"       ` // port
 	Username  string      `json:"username"  orm:"username"   ` // username

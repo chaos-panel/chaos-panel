@@ -6,7 +6,6 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/yitter/idgenerator-go/idgen"
 
-	_ "github.com/chaos-plus/chaos-plus/internal/packed"
 	"github.com/chaos-plus/chaos-plus/internal/service"
 	"github.com/chaos-plus/chaos-plus/utility/configs"
 )

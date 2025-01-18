@@ -10,8 +10,6 @@ import (
 	"github.com/chaos-plus/chaos-plus/internal/service"
 	"github.com/chaos-plus/chaos-plus/utility/page"
 	"github.com/gogf/gf/v2/database/gdb"
-
-	_ "github.com/chaos-plus/chaos-plus/internal/packed"
 )
 
 type sLogs struct{}
@@ -32,6 +30,12 @@ func (s *sLogs) Create(ctx context.Context, log *do.Logs) error {
 	})
 }
 
+func (s *sLogs) GetOne(ctx context.Context, req *v1.GetOneReq) (res *v1.GetOneRes, err error) {
+	m := dao.Logs.Ctx(ctx)
+	err = m.Where("id = ?", req.Id).Scan(&res)
+	return
+}
+
 func (s *sLogs) GetList(ctx context.Context, req *v1.GetListReq) (res *v1.GetListRes, err error) {
 	var entities []entity.Logs
 	var count int
@@ -46,11 +50,5 @@ func (s *sLogs) GetList(ctx context.Context, req *v1.GetListReq) (res *v1.GetLis
 	res.Count = len(entities)
 	res.Total = count
 	res.List = entities
-	return
-}
-
-func (s *sLogs) GetOne(ctx context.Context, req *v1.GetOneReq) (res *v1.GetOneRes, err error) {
-	m := dao.Logs.Ctx(ctx)
-	err = m.Where("id = ?", req.Id).Scan(&res)
 	return
 }

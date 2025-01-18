@@ -1,5 +1,5 @@
 // =================================================================================
-// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-16 23:38:52
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT. Created at 2025-01-18 00:02:22
 // =================================================================================
 
 package do
@@ -14,6 +14,7 @@ type Terminals struct {
 	g.Meta    `orm:"table:chaosplus_terminals, do:true"`
 	Id        interface{} // ID
 	TenantId  interface{} // tenant id
+	Type      interface{} // type
 	Host      interface{} // host
 	Port      interface{} // port
 	Username  interface{} // username

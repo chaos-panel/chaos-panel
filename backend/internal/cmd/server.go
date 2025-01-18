@@ -11,6 +11,7 @@ import (
 	"github.com/chaos-plus/chaos-plus/utility/docs"
 	"github.com/chaos-plus/chaos-plus/utility/middleware"
 	"github.com/chaos-plus/chaos-plus/utility/migration"
+	"github.com/gorilla/websocket"
 
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -19,6 +20,11 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
 )
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
 
 var ServerCmd = &gcmd.Command{
 	Name:  "server",
@@ -54,6 +60,9 @@ var ServerCmd = &gcmd.Command{
 				apis.NewV1(),
 				logs.NewV1(),
 			)
+		})
+		s.BindHandler("/ws", func(r *ghttp.Request) {
+			service.Websocket().Upgrade(r)
 		})
 		// s.Group("/tpl", func(group *ghttp.RouterGroup) {
 		// 	group.GET("/template", func(r *ghttp.Request) {

@@ -11,8 +11,6 @@ import (
 	"github.com/chaos-plus/chaos-plus/internal/model/do"
 	"github.com/chaos-plus/chaos-plus/internal/service"
 	httputils "github.com/chaos-plus/chaos-plus/utility/http"
-
-	_ "github.com/chaos-plus/chaos-plus/internal/logic"
 )
 
 type LogContent struct {
@@ -72,7 +70,7 @@ func ApiRequestLogsHandler(r *ghttp.Request) {
 		ClientInfo: httputils.GetClientInfo(r),
 		Remark:     errorStatus,
 		Log:        json,
-		CreatedBy:  0, // TODO
+		CreatedBy:  GetUserId(r), // TODO
 		CreatedAt:  gtime.Now(),
 	})
 }
