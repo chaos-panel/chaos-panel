@@ -20,8 +20,13 @@ func deepCopyInto[T any](ptr *T, value any) error {
 	return nil
 }
 
-// DeepCopy deep copy value and return a new value of type T.
 func DeepCopy[T any](value any) (T, error) {
+	var ptr T
+	err := deepCopyInto(&ptr, value)
+	return ptr, err
+}
+
+func ToAny[T any](value any) (T, error) {
 	var ptr T
 	err := deepCopyInto(&ptr, value)
 	return ptr, err

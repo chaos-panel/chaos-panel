@@ -4,9 +4,9 @@
 -- SET GLOBAL tidb_skip_isolation_level_check=1;
 -- SET GLOBAL tidb_multi_statement_mode='ON';
 -- SET GLOBAL sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
-DROP DATABASE IF EXISTS `chaos_plus`;
+-- DROP DATABASE IF EXISTS `chaos_plus`;
 
-CREATE DATABASE `chaos_plus`;
+-- CREATE DATABASE `chaos_plus`;
 
 USE `chaos_plus`;
 -- -----------------------------------------------------

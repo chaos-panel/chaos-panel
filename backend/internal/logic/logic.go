@@ -9,6 +9,5 @@ import (
 	_ "github.com/chaos-plus/chaos-plus/internal/logic/guid"
 	_ "github.com/chaos-plus/chaos-plus/internal/logic/logs"
 	_ "github.com/chaos-plus/chaos-plus/internal/logic/terminal"
-	_ "github.com/chaos-plus/chaos-plus/internal/logic/websocket"
 	_ "github.com/chaos-plus/chaos-plus/internal/logic/worker_id"
 )

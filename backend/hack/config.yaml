@@ -22,7 +22,7 @@ gfcli:
     path:      "./bin"
     extra:     ""
     varMap:
-      migration: "manifest/sql/:20250107"
+      migration: "manifest/sql/:20250116"
 
   docker:
     build: "-a amd64 -s linux -p temp -ew"

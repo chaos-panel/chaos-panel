@@ -2,6 +2,7 @@ package guid
 
 import (
 	"context"
+	"net/http"
 
 	v1 "github.com/chaos-plus/chaos-plus/api/terminals/v1"
 	"github.com/chaos-plus/chaos-plus/internal/dao"
@@ -14,9 +15,20 @@ import (
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gorilla/websocket"
 )
 
 type sTerminal struct{}
+
+type WsMessage struct {
+	Type string `json:"type"`
+	Data string `json:"data"`
+}
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
 
 func init() {
 	service.RegisterTerminal(&sTerminal{})
@@ -27,7 +39,7 @@ func New() service.ITerminal {
 }
 
 func (s *sTerminal) Create(ctx context.Context, req *v1.CreateReq) (res *v1.CreateRes, err error) {
-	do, err := converter.DeepCopy[do.Terminals](*req)
+	do, err := converter.ToAny[do.Terminals](*req)
 	if err != nil {
 		return
 	}
@@ -85,4 +97,26 @@ func (s *sTerminal) Delete(ctx context.Context, req *v1.DeleteReq) (res *v1.Dele
 		return err
 	})
 	return
+}
+
+func (s *sTerminal) GetSession(ctx context.Context, req *v1.GetSessionReq) (res *v1.GetSessionRes, err error) {
+	r := g.RequestFromCtx(ctx)
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	conn, err := upgrader.Upgrade(r.Response.Writer, r.Request, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+	for {
+		_, msg, err := conn.ReadMessage()
+		if err != nil {
+			return nil, err
+		}
+		if string(msg) == "PING" {
+			err = conn.WriteMessage(websocket.TextMessage, []byte("PONG"))
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
 }

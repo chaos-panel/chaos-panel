@@ -44,3 +44,9 @@ type DeleteReq struct {
 	Id     int64 `p:"id"  v:"required#missing id"  in:"path"`
 }
 type DeleteRes int64
+
+type GetSessionReq struct {
+	g.Meta `path:"/terminals/:id/session" tags:"Terminals" method:"get" summary:"get a terminal session"`
+	Id     int64 `p:"id"  v:"required#missing id"  in:"path"`
+}
+type GetSessionRes struct{}

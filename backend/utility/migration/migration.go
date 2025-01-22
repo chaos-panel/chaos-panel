@@ -117,25 +117,30 @@ func handleMigration(ctx context.Context, path string, version string) {
 			panic(err)
 		}
 		cur, dirty, err := m.Version()
-		if !errors.Is(err, migrate.ErrNilVersion) {
+		if err != nil && !errors.Is(err, migrate.ErrNilVersion) {
 			panic(err)
 		}
 		if dirty {
 			panic("db migration error: dirty")
 		}
-		if cur == 0 {
-			g.Log().Info(ctx, "db migration start")
-			err = m.Up()
-		} else {
-			g.Log().Info(ctx, "db migration start: %d -> %d", cur, cur+uint(steps))
+
+		if cur > 0 && cur == uint(steps) {
+			g.Log().Info(ctx, "db migration skip: no change")
+			return
+		} else if steps > 0 {
+			g.Log().Infof(ctx, "db migration start: %d -> %d", cur, uint(steps))
 			err = m.Migrate(uint(steps))
+		} else {
+			g.Log().Info(ctx, "db migration start:", group, node.Type)
+			err = m.Up()
 		}
+
 		_, _ = m.Close()
 		if err == nil {
 			g.Log().Info(ctx, "db migration done")
 			return
 		}
-		if !errors.Is(err, migrate.ErrNoChange) {
+		if errors.Is(err, migrate.ErrNoChange) {
 			g.Log().Info(ctx, "db migration done: no change")
 			return
 		} else {

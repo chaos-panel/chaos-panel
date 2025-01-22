@@ -6,12 +6,13 @@ import (
 
 	"github.com/chaos-plus/chaos-plus/internal/controller/apis"
 	"github.com/chaos-plus/chaos-plus/internal/controller/logs"
+	"github.com/chaos-plus/chaos-plus/internal/controller/terminals"
+	"github.com/chaos-plus/chaos-plus/internal/controller/users"
 	"github.com/chaos-plus/chaos-plus/internal/service"
 	"github.com/chaos-plus/chaos-plus/utility/configs"
 	"github.com/chaos-plus/chaos-plus/utility/docs"
 	"github.com/chaos-plus/chaos-plus/utility/middleware"
 	"github.com/chaos-plus/chaos-plus/utility/migration"
-	"github.com/gorilla/websocket"
 
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -20,11 +21,6 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
 )
-
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
 
 var ServerCmd = &gcmd.Command{
 	Name:  "server",
@@ -49,7 +45,6 @@ var ServerCmd = &gcmd.Command{
 		migration.Migrate(ctx)
 
 		s := g.Server()
-		// s.EnablePProf() // use config file to set
 
 		s.Group("/", func(group *ghttp.RouterGroup) {
 			group.Middleware(ghttp.MiddlewareHandlerResponse)
@@ -59,20 +54,10 @@ var ServerCmd = &gcmd.Command{
 			group.Bind(
 				apis.NewV1(),
 				logs.NewV1(),
+				users.NewV1(),
+				terminals.NewV1(),
 			)
 		})
-		s.BindHandler("/ws", func(r *ghttp.Request) {
-			service.Websocket().Upgrade(r)
-		})
-		// s.Group("/tpl", func(group *ghttp.RouterGroup) {
-		// 	group.GET("/template", func(r *ghttp.Request) {
-		// 		r.Response.WriteTplDefault(g.Map{
-		// 			"name": "GoFrame",
-		// 		})
-		// 	})
-		// })
-
-		// s.SetServerRoot("resource/public")  // use config file to set
 
 		docs.InitSwagger(ctx, s)
 

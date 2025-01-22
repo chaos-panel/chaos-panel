@@ -17,6 +17,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/os/gtimer"
+	"github.com/hashicorp/go-multierror"
 	"github.com/shirou/gopsutil/v3/host"
 )
 
@@ -113,9 +114,12 @@ func getOrRefreshWorkerId(ctx context.Context, tag string, ttl time.Duration, ex
 		}
 		// release distributed locker
 		defer func() {
-			unlockerr := service.Dlock().Unlock(ctx, dlockKey, workerTag)
-			if unlockerr != nil {
-				err = unlockerr
+			if unlockerr := service.Dlock().Unlock(ctx, dlockKey, workerTag); unlockerr != nil {
+				if err == nil {
+					err = unlockerr
+				} else {
+					err = multierror.Append(err, unlockerr)
+				}
 			}
 		}()
 
