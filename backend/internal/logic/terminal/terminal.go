@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 	"sync"
@@ -166,22 +165,51 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 	}
 	client, err := ssh.Dial("tcp", addr, config)
 	if err != nil {
-		log.Fatalf("Failed to dial: %s", err)
+		g.Log().Errorf(ctx, "Failed to dial: %s", err)
+		return err
 	}
 	defer client.Close()
 
 	session, err := client.NewSession()
 	if err != nil {
-		log.Fatalf("Failed to create session: %s", err)
+		g.Log().Errorf(ctx, "Failed to create session: %s", err)
+		return err
 	}
 	defer session.Close()
+
+	// 创建输入/输出 pipe
+	stdin, err := session.StdinPipe()
+	if err != nil {
+		g.Log().Errorf(ctx, "Failed to create stdin pipe: %s", err)
+		return err
+	}
+	stdout, err := session.StdoutPipe()
+	if err != nil {
+		g.Log().Errorf(ctx, "Failed to create stdout pipe: %s", err)
+		return err
+	}
+	stderr, err := session.StderrPipe()
+	if err != nil {
+		g.Log().Errorf(ctx, "Failed to create stderr pipe: %s", err)
+		return err
+	}
+
+	err = session.Shell()
+	if err != nil {
+		g.Log().Error(ctx, err)
+		return err
+	}
 
 	conn.SetCloseHandler(func(code int, text string) error {
 		session.Close()
 		return nil
 	})
+
 	grpool.AddWithRecover(ctx, func(ctx context.Context) {
-		session.Wait()
+		if err = session.Wait(); err != nil {
+			g.Log().Error(ctx, err)
+		}
+		g.Log().Info(ctx, "Session wait closed")
 		conn.Close()
 	}, func(ctx context.Context, err error) {
 		g.Log().Error(ctx, err)
@@ -189,15 +217,18 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 
 	var wg sync.WaitGroup
 
+	// WebSocket -> SSH stdin
 	grpool.AddWithRecover(ctx, func(ctx context.Context) {
 		defer wg.Done()
 		for {
 			_, msg, err := conn.ReadMessage()
 			if err != nil {
+				g.Log().Error(ctx, "WebSocket read error:", err)
 				return
 			}
-			_, err = session.Stdout.Write(msg)
+			_, err = stdin.Write(msg)
 			if err != nil {
+				g.Log().Error(ctx, "SSH stdin write error:", err)
 				return
 			}
 		}
@@ -205,16 +236,19 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 		g.Log().Error(ctx, err)
 	})
 
+	// SSH stdout -> WebSocket
 	grpool.AddWithRecover(ctx, func(ctx context.Context) {
 		defer wg.Done()
 		buf := make([]byte, 1024)
 		for {
-			n, err := session.Stdin.Read(buf[:0])
+			n, err := stdout.Read(buf)
 			if err != nil {
+				g.Log().Error(ctx, "SSH stdout read error:", err)
 				return
 			}
 			err = conn.WriteMessage(websocket.TextMessage, buf[:n])
 			if err != nil {
+				g.Log().Error(ctx, "WebSocket write error:", err)
 				return
 			}
 		}
@@ -222,10 +256,29 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 		g.Log().Error(ctx, err)
 	})
 
-	// 等待所有 goroutine 完成
-	wg.Add(2) // 添加两个 goroutine 的等待
-	wg.Wait() // 阻塞直到所有 goroutine 完成
+	// SSH stderr -> WebSocket (用于错误信息)
+	grpool.AddWithRecover(ctx, func(ctx context.Context) {
+		defer wg.Done()
+		buf := make([]byte, 1024)
+		for {
+			n, err := stderr.Read(buf)
+			if err != nil {
+				g.Log().Error(ctx, "SSH stderr read error:", err)
+				return
+			}
+			err = conn.WriteMessage(websocket.TextMessage, buf[:n])
+			if err != nil {
+				g.Log().Error(ctx, "WebSocket write error (stderr):", err)
+				return
+			}
+		}
+	}, func(ctx context.Context, err error) {
+		g.Log().Error(ctx, err)
+	})
 
+	wg.Add(3)
+	wg.Wait()
+	g.Log().Info(ctx, "Terminal session exited")
 	return
 }
 
