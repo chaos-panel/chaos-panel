@@ -2,6 +2,7 @@ package guid
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -27,8 +28,9 @@ import (
 
 type sTerminal struct{}
 
-type WsMessage struct {
-	Type string `json:"type"`
+type TerminalMessage struct {
+	Rows int    `json:"rows"`
+	Cols int    `json:"cols"`
 	Data string `json:"data"`
 }
 
@@ -177,7 +179,13 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 	}
 	defer session.Close()
 
-	// 创建输入/输出 pipe
+	if err := session.RequestPty("xterm", 80, 40, ssh.TerminalModes{
+		ssh.ECHO: 1, // 启用回显
+	}); err != nil {
+		g.Log().Error(ctx, err)
+		return err
+	}
+
 	stdin, err := session.StdinPipe()
 	if err != nil {
 		g.Log().Errorf(ctx, "Failed to create stdin pipe: %s", err)
@@ -191,12 +199,6 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 	stderr, err := session.StderrPipe()
 	if err != nil {
 		g.Log().Errorf(ctx, "Failed to create stderr pipe: %s", err)
-		return err
-	}
-
-	err = session.Shell()
-	if err != nil {
-		g.Log().Error(ctx, err)
 		return err
 	}
 
@@ -216,20 +218,92 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 	})
 
 	var wg sync.WaitGroup
+	var mutex sync.Mutex
+
+	// write message to websocket connection
+	writeMessage := func(messageType int, data []byte) error {
+		mutex.Lock()
+		defer mutex.Unlock()
+		if err := conn.WriteMessage(messageType, data); err != nil {
+			g.Log().Error(ctx, err)
+		}
+		return err
+	}
 
 	// WebSocket -> SSH stdin
 	grpool.AddWithRecover(ctx, func(ctx context.Context) {
 		defer wg.Done()
 		for {
-			_, msg, err := conn.ReadMessage()
+			typ, msg, err := conn.ReadMessage()
 			if err != nil {
 				g.Log().Error(ctx, "WebSocket read error:", err)
 				return
 			}
-			_, err = stdin.Write(msg)
+			if typ == websocket.CloseMessage {
+				err := writeMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+				if err != nil {
+					g.Log().Error(ctx, "WebSocket write error:", err)
+				}
+				conn.Close()
+				return
+			}
+			if typ == websocket.PongMessage {
+				continue
+			}
+			if typ == websocket.PingMessage {
+				err = writeMessage(websocket.PongMessage, nil)
+				if err != nil {
+					g.Log().Error(ctx, "WebSocket write error:", err)
+					return
+				}
+				continue
+			}
+			if typ == websocket.BinaryMessage {
+				g.Log().Error(ctx, "Unsupported message type:", typ)
+				return
+			}
+			if typ != websocket.TextMessage {
+				g.Log().Error(ctx, "Unsupported message type:", typ)
+				return
+			}
+			var resmsg TerminalMessage
+			var reqmsg TerminalMessage
+			jsonErr := json.Unmarshal(msg, &reqmsg)
+			isJson := jsonErr == nil && reqmsg.Data != ""
+			if !isJson {
+				resmsg.Data = string(msg)
+			} else {
+				resmsg.Data = reqmsg.Data
+			}
+			if reqmsg.Cols > 0 && reqmsg.Rows > 0 {
+				b, err := session.SendRequest("window-change", false, []byte{
+					0, 0, byte(reqmsg.Rows), byte(reqmsg.Cols), // window change size: rows = 100, columns = 200
+				})
+				if err != nil {
+					g.Log().Error(ctx, "Failed to send window-change request:", err)
+				}
+				if err == nil && b {
+					resmsg.Cols = reqmsg.Cols
+					resmsg.Rows = reqmsg.Rows
+				}
+			}
+			_, err = stdin.Write([]byte(resmsg.Data))
 			if err != nil {
 				g.Log().Error(ctx, "SSH stdin write error:", err)
 				return
+			}
+			if resmsg.Cols > 0 && resmsg.Rows > 0 {
+				resmsg.Data = ""
+				resjson, err := json.Marshal(resmsg)
+				if err != nil {
+					g.Log().Error(ctx, "Failed to marshal resmsg:", err)
+					continue
+				}
+				err = writeMessage(websocket.TextMessage, resjson)
+				if err != nil {
+					g.Log().Error(ctx, "WebSocket write error (stderr):", err)
+					return
+				}
 			}
 		}
 	}, func(ctx context.Context, err error) {
@@ -246,7 +320,7 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 				g.Log().Error(ctx, "SSH stdout read error:", err)
 				return
 			}
-			err = conn.WriteMessage(websocket.TextMessage, buf[:n])
+			err = writeMessage(websocket.TextMessage, buf[:n])
 			if err != nil {
 				g.Log().Error(ctx, "WebSocket write error:", err)
 				return
@@ -266,7 +340,7 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 				g.Log().Error(ctx, "SSH stderr read error:", err)
 				return
 			}
-			err = conn.WriteMessage(websocket.TextMessage, buf[:n])
+			err = writeMessage(websocket.TextMessage, buf[:n])
 			if err != nil {
 				g.Log().Error(ctx, "WebSocket write error (stderr):", err)
 				return
