@@ -156,7 +156,8 @@ func (s *sTerminal) GetSession(ctx context.Context, req *v1.GetSessionReq) (res 
 	return
 }
 
-func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Terminals) (err error) {
+func handleByAuth(ctx context.Context, ws *websocket.Conn, Terminal *entity.Terminals) (err error) {
+	r := g.RequestFromCtx(ctx)
 	addr := fmt.Sprintf("%s:%d", Terminal.Host, Terminal.Port)
 	config := &ssh.ClientConfig{
 		User: Terminal.Username,
@@ -172,47 +173,53 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 	}
 	defer client.Close()
 
-	session, err := client.NewSession()
+	term, err := client.NewSession()
 	if err != nil {
 		g.Log().Errorf(ctx, "Failed to create session: %s", err)
 		return err
 	}
-	defer session.Close()
+	defer term.Close()
 
-	if err := session.RequestPty("xterm", 80, 40, ssh.TerminalModes{
+	cols := r.GetParam("cols", "80").Int() // w
+	rows := r.GetParam("rows", "40").Int() // h
+
+	if err := term.RequestPty("xterm", rows, cols, ssh.TerminalModes{
 		ssh.ECHO: 1, // 启用回显
 	}); err != nil {
 		g.Log().Error(ctx, err)
 		return err
 	}
-
-	stdin, err := session.StdinPipe()
+	stdin, err := term.StdinPipe()
 	if err != nil {
 		g.Log().Errorf(ctx, "Failed to create stdin pipe: %s", err)
 		return err
 	}
-	stdout, err := session.StdoutPipe()
+	stdout, err := term.StdoutPipe()
 	if err != nil {
 		g.Log().Errorf(ctx, "Failed to create stdout pipe: %s", err)
 		return err
 	}
-	stderr, err := session.StderrPipe()
+	stderr, err := term.StderrPipe()
 	if err != nil {
 		g.Log().Errorf(ctx, "Failed to create stderr pipe: %s", err)
 		return err
 	}
 
-	conn.SetCloseHandler(func(code int, text string) error {
-		session.Close()
-		return nil
+	if err := term.Shell(); err != nil {
+		g.Log().Error(ctx, err)
+		return err
+	}
+
+	ws.SetCloseHandler(func(code int, text string) error {
+		return term.Close()
 	})
 
 	grpool.AddWithRecover(ctx, func(ctx context.Context) {
-		if err = session.Wait(); err != nil {
+		if err = term.Wait(); err != nil {
 			g.Log().Error(ctx, err)
 		}
 		g.Log().Info(ctx, "Session wait closed")
-		conn.Close()
+		ws.Close()
 	}, func(ctx context.Context, err error) {
 		g.Log().Error(ctx, err)
 	})
@@ -221,10 +228,10 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 	var mutex sync.Mutex
 
 	// write message to websocket connection
-	writeMessage := func(messageType int, data []byte) error {
+	writeWsMessage := func(messageType int, data []byte) error {
 		mutex.Lock()
 		defer mutex.Unlock()
-		if err := conn.WriteMessage(messageType, data); err != nil {
+		if err := ws.WriteMessage(messageType, data); err != nil {
 			g.Log().Error(ctx, err)
 		}
 		return err
@@ -234,24 +241,24 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 	grpool.AddWithRecover(ctx, func(ctx context.Context) {
 		defer wg.Done()
 		for {
-			typ, msg, err := conn.ReadMessage()
+			typ, msg, err := ws.ReadMessage()
 			if err != nil {
 				g.Log().Error(ctx, "WebSocket read error:", err)
 				return
 			}
 			if typ == websocket.CloseMessage {
-				err := writeMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+				err := writeWsMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 				if err != nil {
 					g.Log().Error(ctx, "WebSocket write error:", err)
 				}
-				conn.Close()
+				ws.Close()
 				return
 			}
 			if typ == websocket.PongMessage {
 				continue
 			}
 			if typ == websocket.PingMessage {
-				err = writeMessage(websocket.PongMessage, nil)
+				err = writeWsMessage(websocket.PongMessage, nil)
 				if err != nil {
 					g.Log().Error(ctx, "WebSocket write error:", err)
 					return
@@ -276,7 +283,7 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 				resmsg.Data = reqmsg.Data
 			}
 			if reqmsg.Cols > 0 && reqmsg.Rows > 0 {
-				b, err := session.SendRequest("window-change", false, []byte{
+				b, err := term.SendRequest("window-change", false, []byte{
 					0, 0, byte(reqmsg.Rows), byte(reqmsg.Cols), // window change size: rows = 100, columns = 200
 				})
 				if err != nil {
@@ -299,7 +306,7 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 					g.Log().Error(ctx, "Failed to marshal resmsg:", err)
 					continue
 				}
-				err = writeMessage(websocket.TextMessage, resjson)
+				err = writeWsMessage(websocket.TextMessage, resjson)
 				if err != nil {
 					g.Log().Error(ctx, "WebSocket write error (stderr):", err)
 					return
@@ -320,7 +327,7 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 				g.Log().Error(ctx, "SSH stdout read error:", err)
 				return
 			}
-			err = writeMessage(websocket.TextMessage, buf[:n])
+			err = writeWsMessage(websocket.TextMessage, buf[:n])
 			if err != nil {
 				g.Log().Error(ctx, "WebSocket write error:", err)
 				return
@@ -340,7 +347,7 @@ func handleByAuth(ctx context.Context, conn *websocket.Conn, Terminal *entity.Te
 				g.Log().Error(ctx, "SSH stderr read error:", err)
 				return
 			}
-			err = writeMessage(websocket.TextMessage, buf[:n])
+			err = writeWsMessage(websocket.TextMessage, buf[:n])
 			if err != nil {
 				g.Log().Error(ctx, "WebSocket write error (stderr):", err)
 				return

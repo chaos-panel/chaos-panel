@@ -14,6 +14,7 @@ import (
 	"github.com/chaos-plus/chaos-plus/utility/middleware"
 	"github.com/chaos-plus/chaos-plus/utility/migration"
 
+	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
@@ -33,11 +34,12 @@ var ServerCmd = &gcmd.Command{
 
 		// set global timezone
 		timezone := configs.GetConfig(ctx, "server.timezone")
-		if timezone != nil && !timezone.IsNil() && gconv.String(timezone) != "" {
-			println("set timezone: " + gconv.String(timezone))
-			if err := gtime.SetTimeZone(gconv.String(timezone)); err != nil {
-				panic(err)
-			}
+		if timezone == nil || timezone.IsNil() || gconv.String(timezone) == "" {
+			timezone = gvar.New("UTC")
+		}
+		println("set timezone: " + gconv.String(timezone))
+		if err := gtime.SetTimeZone(gconv.String(timezone)); err != nil {
+			panic(err)
 		}
 
 		gres.Dump()
@@ -63,6 +65,9 @@ var ServerCmd = &gcmd.Command{
 
 		service.WorkerId().InitOrPanic(ctx, s.GetListenedAddress(), s.GetListenedPorts())
 		service.Guid().InitOrPanic(ctx)
+
+		// s.EnablePProf()
+		// s.SetServerRoot("resource/public")
 
 		s.Run()
 		return nil
