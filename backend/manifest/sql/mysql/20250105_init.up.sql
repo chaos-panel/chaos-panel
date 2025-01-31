@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `chaosplus_settings` (
 CREATE TABLE IF NOT EXISTS `chaosplus_change_logs` (
     `id` BIGINT UNSIGNED NOT NULL COMMENT 'id',
     `union_id` BIGINT UNSIGNED NOT NULL COMMENT 'union id',
-    `snapshot` JSON NOT NULL COMMENT 'snapshot',
+    `snapshot` TEXT NOT NULL COMMENT 'snapshot',
     `created_by` BIGINT UNSIGNED NOT NULL COMMENT 'created by',
     `created_at` TIMESTAMP NOT NULL COMMENT 'locked at',
     `deleted_by` BIGINT UNSIGNED NOT NULL COMMENT 'deleted by',

@@ -140,4 +140,4 @@ CREATE TABLE IF NOT EXISTS `chaosplus_files_closure` (
         `descendant_id`
     ),
     INDEX (`descendant_id`)
-) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'file logical closure';
+) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = 'file logical closure';

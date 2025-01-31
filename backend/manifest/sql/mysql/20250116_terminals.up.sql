@@ -1,6 +1,3 @@
---
--- api, data, group, department, menu, button, ... tree
---
 
 CREATE TABLE IF NOT EXISTS `chaosplus_terminals` (
     `id` BIGINT UNSIGNED NOT NULL COMMENT 'ID',
@@ -24,4 +21,4 @@ CREATE TABLE IF NOT EXISTS `chaosplus_terminals` (
     INDEX (`updated_at`),
     INDEX (`deleted_by`),
     INDEX (`deleted_at`)
-) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = 'resource';
+) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COMMENT = 'terminals';

@@ -9,6 +9,7 @@ import (
 	"github.com/chaos-plus/chaos-plus/internal/dao"
 	"github.com/chaos-plus/chaos-plus/internal/model/do"
 	"github.com/chaos-plus/chaos-plus/internal/service"
+	"github.com/chaos-plus/chaos-plus/utility/combine"
 	"github.com/chaos-plus/chaos-plus/utility/crypto"
 	netutils "github.com/chaos-plus/chaos-plus/utility/net"
 	"github.com/gogf/gf/v2/container/gvar"
@@ -17,7 +18,6 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/os/gtimer"
-	"github.com/hashicorp/go-multierror"
 	"github.com/shirou/gopsutil/v3/host"
 )
 
@@ -114,13 +114,10 @@ func getOrRefreshWorkerId(ctx context.Context, tag string, ttl time.Duration, ex
 		}
 		// release distributed locker
 		defer func() {
-			if unlockerr := service.Dlock().Unlock(ctx, dlockKey, workerTag); unlockerr != nil {
-				if err == nil {
-					err = unlockerr
-				} else {
-					err = multierror.Append(err, unlockerr)
-				}
-			}
+			err = combine.Errors(
+				err,
+				service.Dlock().Unlock(ctx, dlockKey, workerTag),
+			)
 		}()
 
 		// delete expired workerId

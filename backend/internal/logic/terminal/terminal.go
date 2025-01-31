@@ -1,10 +1,9 @@
-package guid
+package terminal
 
 import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 	"sync"
@@ -23,7 +22,6 @@ import (
 	"github.com/gogf/gf/v2/os/grpool"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gorilla/websocket"
-	"golang.org/x/crypto/ssh"
 )
 
 type sTerminal struct{}
@@ -32,6 +30,22 @@ type TerminalMessage struct {
 	Rows int    `json:"rows"`
 	Cols int    `json:"cols"`
 	Data string `json:"data"`
+}
+
+type TerminalHandler interface {
+	Open(rows int, cols int) (err error)
+
+	Rezize(rows int, cols int) (b bool, err error)
+
+	ReadIn(buf []byte) (n int, err error)
+
+	ReadErr(buf []byte) (n int, err error)
+
+	WriteOut(buf []byte) (n int, err error)
+
+	Wait() (err error)
+
+	Close() (err error)
 }
 
 var upgrader = websocket.Upgrader{
@@ -146,79 +160,49 @@ func (s *sTerminal) GetSession(ctx context.Context, req *v1.GetSessionReq) (res 
 	}
 	defer conn.Close()
 
-	if strings.ToLower(terminal.Type) == "agent" {
-		err = handleByAgent(conn, terminal)
-	} else if strings.ToLower(terminal.Type) == "auth" {
-		err = handleByAuth(ctx, conn, terminal)
-	} else {
-		err = errors.New("unknown terminal type:" + terminal.Type)
-	}
+	err = HandleImpl(ctx, conn, terminal)
 	return
 }
 
-func handleByAuth(ctx context.Context, ws *websocket.Conn, Terminal *entity.Terminals) (err error) {
+func HandleImpl(ctx context.Context, ws *websocket.Conn, terminal *entity.Terminals) (err error) {
 	r := g.RequestFromCtx(ctx)
-	addr := fmt.Sprintf("%s:%d", Terminal.Host, Terminal.Port)
-	config := &ssh.ClientConfig{
-		User: Terminal.Username,
-		Auth: []ssh.AuthMethod{
-			ssh.Password(Terminal.Password),
-		},
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-	}
-	client, err := ssh.Dial("tcp", addr, config)
-	if err != nil {
-		g.Log().Errorf(ctx, "Failed to dial: %s", err)
-		return err
-	}
-	defer client.Close()
-
-	term, err := client.NewSession()
-	if err != nil {
-		g.Log().Errorf(ctx, "Failed to create session: %s", err)
-		return err
-	}
-	defer term.Close()
-
 	cols := r.GetParam("cols", "80").Int() // w
 	rows := r.GetParam("rows", "40").Int() // h
 
-	if err := term.RequestPty("xterm", rows, cols, ssh.TerminalModes{
-		ssh.ECHO: 1, // 启用回显
-	}); err != nil {
-		g.Log().Error(ctx, err)
-		return err
+	var handler TerminalHandler = nil
+	if strings.ToLower(terminal.Type) == "agent" {
+		handler = NewHandlerByAgent()
+	} else if strings.ToLower(terminal.Type) == "auth" {
+		handler = NewHandlerByAuth(ctx, terminal)
+	} else if strings.ToLower(terminal.Type) == "host" {
+		handler = NewHandlerByHost()
+	} else if strings.ToLower(terminal.Type) == "plugin" {
+		handler = NewHandlerByPlugin()
+	} else {
+		err = errors.New("unknown terminal type:" + terminal.Type)
 	}
-	stdin, err := term.StdinPipe()
-	if err != nil {
-		g.Log().Errorf(ctx, "Failed to create stdin pipe: %s", err)
-		return err
-	}
-	stdout, err := term.StdoutPipe()
-	if err != nil {
-		g.Log().Errorf(ctx, "Failed to create stdout pipe: %s", err)
-		return err
-	}
-	stderr, err := term.StderrPipe()
-	if err != nil {
-		g.Log().Errorf(ctx, "Failed to create stderr pipe: %s", err)
+
+	if err != nil || handler == nil {
+		g.Log().Errorf(ctx, "terminal init failed: %s", err)
 		return err
 	}
 
-	if err := term.Shell(); err != nil {
-		g.Log().Error(ctx, err)
+	err = handler.Open(rows, cols)
+	if err != nil {
+		g.Log().Errorf(ctx, "terminal open error: %s", err)
 		return err
 	}
+	defer handler.Close()
 
 	ws.SetCloseHandler(func(code int, text string) error {
-		return term.Close()
+		return handler.Close()
 	})
 
 	grpool.AddWithRecover(ctx, func(ctx context.Context) {
-		if err = term.Wait(); err != nil {
+		if err = handler.Wait(); err != nil {
 			g.Log().Error(ctx, err)
 		}
-		g.Log().Info(ctx, "Session wait closed")
+		g.Log().Info(ctx, "terminal session closed")
 		ws.Close()
 	}, func(ctx context.Context, err error) {
 		g.Log().Error(ctx, err)
@@ -227,7 +211,6 @@ func handleByAuth(ctx context.Context, ws *websocket.Conn, Terminal *entity.Term
 	var wg sync.WaitGroup
 	var mutex sync.Mutex
 
-	// write message to websocket connection
 	writeWsMessage := func(messageType int, data []byte) error {
 		mutex.Lock()
 		defer mutex.Unlock()
@@ -237,19 +220,18 @@ func handleByAuth(ctx context.Context, ws *websocket.Conn, Terminal *entity.Term
 		return err
 	}
 
-	// WebSocket -> SSH stdin
 	grpool.AddWithRecover(ctx, func(ctx context.Context) {
 		defer wg.Done()
 		for {
 			typ, msg, err := ws.ReadMessage()
 			if err != nil {
-				g.Log().Error(ctx, "WebSocket read error:", err)
+				g.Log().Error(ctx, "websocket read error:", err)
 				return
 			}
 			if typ == websocket.CloseMessage {
 				err := writeWsMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 				if err != nil {
-					g.Log().Error(ctx, "WebSocket write error:", err)
+					g.Log().Error(ctx, "websocket write error:", err)
 				}
 				ws.Close()
 				return
@@ -260,7 +242,7 @@ func handleByAuth(ctx context.Context, ws *websocket.Conn, Terminal *entity.Term
 			if typ == websocket.PingMessage {
 				err = writeWsMessage(websocket.PongMessage, nil)
 				if err != nil {
-					g.Log().Error(ctx, "WebSocket write error:", err)
+					g.Log().Error(ctx, "websocket write error:", err)
 					return
 				}
 				continue
@@ -283,32 +265,29 @@ func handleByAuth(ctx context.Context, ws *websocket.Conn, Terminal *entity.Term
 				resmsg.Data = reqmsg.Data
 			}
 			if reqmsg.Cols > 0 && reqmsg.Rows > 0 {
-				b, err := term.SendRequest("window-change", false, []byte{
-					0, 0, byte(reqmsg.Rows), byte(reqmsg.Cols), // window change size: rows = 100, columns = 200
-				})
+				b, err := handler.Rezize(reqmsg.Rows, reqmsg.Cols)
 				if err != nil {
-					g.Log().Error(ctx, "Failed to send window-change request:", err)
+					g.Log().Error(ctx, "terminal rezise error:", err)
 				}
 				if err == nil && b {
 					resmsg.Cols = reqmsg.Cols
 					resmsg.Rows = reqmsg.Rows
 				}
 			}
-			_, err = stdin.Write([]byte(resmsg.Data))
+			_, err = handler.WriteOut([]byte(resmsg.Data))
 			if err != nil {
-				g.Log().Error(ctx, "SSH stdin write error:", err)
+				g.Log().Error(ctx, "terminal write error:", err)
 				return
 			}
 			if resmsg.Cols > 0 && resmsg.Rows > 0 {
 				resmsg.Data = ""
 				resjson, err := json.Marshal(resmsg)
 				if err != nil {
-					g.Log().Error(ctx, "Failed to marshal resmsg:", err)
+					g.Log().Error(ctx, "terminal marshal error:", err)
 					continue
 				}
 				err = writeWsMessage(websocket.TextMessage, resjson)
 				if err != nil {
-					g.Log().Error(ctx, "WebSocket write error (stderr):", err)
 					return
 				}
 			}
@@ -317,40 +296,37 @@ func handleByAuth(ctx context.Context, ws *websocket.Conn, Terminal *entity.Term
 		g.Log().Error(ctx, err)
 	})
 
-	// SSH stdout -> WebSocket
 	grpool.AddWithRecover(ctx, func(ctx context.Context) {
 		defer wg.Done()
 		buf := make([]byte, 1024)
 		for {
-			n, err := stdout.Read(buf)
+			n, err := handler.ReadIn(buf)
 			if err != nil {
-				g.Log().Error(ctx, "SSH stdout read error:", err)
-				return
+				g.Log().Error(ctx, "terminal read error:", err)
+				break
 			}
 			err = writeWsMessage(websocket.TextMessage, buf[:n])
 			if err != nil {
-				g.Log().Error(ctx, "WebSocket write error:", err)
-				return
+				break
 			}
 		}
+		handler.Close()
 	}, func(ctx context.Context, err error) {
 		g.Log().Error(ctx, err)
 	})
 
-	// SSH stderr -> WebSocket (用于错误信息)
 	grpool.AddWithRecover(ctx, func(ctx context.Context) {
 		defer wg.Done()
 		buf := make([]byte, 1024)
 		for {
-			n, err := stderr.Read(buf)
+			n, err := handler.ReadErr(buf)
 			if err != nil {
-				g.Log().Error(ctx, "SSH stderr read error:", err)
-				return
+				g.Log().Error(ctx, "terminal read error:", err)
+				break
 			}
 			err = writeWsMessage(websocket.TextMessage, buf[:n])
 			if err != nil {
-				g.Log().Error(ctx, "WebSocket write error (stderr):", err)
-				return
+				break
 			}
 		}
 	}, func(ctx context.Context, err error) {
@@ -359,11 +335,6 @@ func handleByAuth(ctx context.Context, ws *websocket.Conn, Terminal *entity.Term
 
 	wg.Add(3)
 	wg.Wait()
-	g.Log().Info(ctx, "Terminal session exited")
-	return
-}
-
-func handleByAgent(conn *websocket.Conn, Terminal *entity.Terminals) (err error) {
-
+	g.Log().Info(ctx, "terminal session exited")
 	return
 }
